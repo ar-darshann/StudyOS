@@ -1,1 +1,520 @@
+/* =========================
+   GENERAL
+========================= */
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    background-color: #0f172a;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    min-height: 100vh;
+
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+
+    height: 70px;
+
+    padding: 0 6%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #1e293b;
+
+    background-color: #0f172a;
+
+}
+
+.logo {
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    color: #38bdf8;
+
+}
+
+.nav-links {
+
+    display: flex;
+
+    gap: 35px;
+
+}
+
+.nav-links a {
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    transition: 0.3s;
+
+}
+
+.nav-links a:hover {
+
+    color: #38bdf8;
+
+}
+
+.profile-button {
+
+    background-color: transparent;
+
+    color: white;
+
+    border: 1px solid #334155;
+
+    padding: 9px 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.profile-button:hover {
+
+    border-color: #38bdf8;
+
+    color: #38bdf8;
+
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+
+    width: 88%;
+
+    max-width: 1250px;
+
+    margin: 0 auto;
+
+    padding: 50px 0;
+
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome {
+
+    margin-bottom: 35px;
+
+}
+
+.welcome h1 {
+
+    font-size: 36px;
+
+    margin-bottom: 10px;
+
+}
+
+.welcome p {
+
+    color: #94a3b8;
+
+    font-size: 17px;
+
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.top-section {
+
+    display: grid;
+
+    grid-template-columns: 1.2fr 1fr;
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+
+}
+
+.card {
+
+    background-color: #111827;
+
+    border: 1px solid #1e293b;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+}
+
+
+/* =========================
+   CARD LABEL
+========================= */
+
+.card-label {
+
+    color: #38bdf8;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =========================
+   TODAY'S FOCUS
+========================= */
+
+.focus-card h2 {
+
+    font-size: 30px;
+
+    margin-top: 20px;
+
+    margin-bottom: 5px;
+
+}
+
+.topic-name {
+
+    color: #cbd5e1;
+
+    font-size: 18px;
+
+    margin-bottom: 20px;
+
+}
+
+.score {
+
+    color: #94a3b8;
+
+    margin-bottom: 25px;
+
+}
+
+.score strong {
+
+    color: #f8fafc;
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-button {
+
+    background-color: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.primary-button:hover {
+
+    background-color: #3b82f6;
+
+    transform: translateY(-2px);
+
+}
+
+
+/* =========================
+   UPCOMING EXAMS
+========================= */
+
+.exams-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.exams-card .card-label {
+
+    margin-bottom: 20px;
+
+}
+
+.exam {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 17px 0;
+
+    border-bottom: 1px solid #1e293b;
+
+    color: #cbd5e1;
+
+}
+
+.exam:last-child {
+
+    border-bottom: none;
+
+}
+
+.exam strong {
+
+    color: white;
+
+}
+
+
+/* =========================
+   WEAK TOPICS
+========================= */
+
+.weak-section {
+
+    background-color: #111827;
+
+    border: 1px solid #1e293b;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+}
+
+.section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+
+}
+
+.section-header h2 {
+
+    margin-top: 8px;
+
+    font-size: 24px;
+
+}
+
+.secondary-button {
+
+    background-color: transparent;
+
+    color: #38bdf8;
+
+    border: 1px solid #334155;
+
+    padding: 9px 17px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.secondary-button:hover {
+
+    background-color: #1e293b;
+
+}
+
+
+/* =========================
+   TOPIC ROW
+========================= */
+
+.topic {
+
+    display: grid;
+
+    grid-template-columns: 1fr 100px 100px;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 18px 0;
+
+    border-top: 1px solid #1e293b;
+
+}
+
+.topic-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+.topic-info span {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
+
+.topic-info small {
+
+    color: #64748b;
+
+}
+
+.topic strong {
+
+    text-align: center;
+
+}
+
+.danger-score {
+
+    color: #f87171;
+
+}
+
+.warning-score {
+
+    color: #facc15;
+
+}
+
+.practice-button {
+
+    background-color: #1e293b;
+
+    color: #cbd5e1;
+
+    border: 1px solid #334155;
+
+    padding: 8px 12px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+.practice-button:hover {
+
+    background-color: #2563eb;
+
+    color: white;
+
+    border-color: #2563eb;
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+    .navbar {
+
+        padding: 0 25px;
+
+    }
+
+    .nav-links {
+
+        display: none;
+
+    }
+
+    .container {
+
+        width: 90%;
+
+        padding: 35px 0;
+
+    }
+
+    .top-section {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .welcome h1 {
+
+        font-size: 30px;
+
+    }
+
+    .topic {
+
+        grid-template-columns: 1fr 70px;
+
+    }
+
+    .practice-button {
+
+        display: none;
+
+    }
+
+}
