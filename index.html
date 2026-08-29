@@ -14,101 +14,323 @@
 
 <body>
 
-    <!-- Navigation -->
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
 
     <nav class="navbar">
 
         <div class="logo">
-            StudyOS
+            Study<span>OS</span>
         </div>
 
         <div class="nav-links">
 
-            <a href="#">Dashboard</a>
+            <a href="#" class="active">Dashboard</a>
             <a href="#">Subjects</a>
             <a href="#">Progress</a>
 
         </div>
 
-        <button class="profile-button">
-            Profile
-        </button>
+        <div class="nav-actions">
+
+            <!-- Theme Toggle -->
+
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle light and dark mode"
+            >
+                <span id="themeIcon">☀️</span>
+            </button>
+
+            <button class="profile-button">
+                SD
+            </button>
+
+        </div>
 
     </nav>
 
 
-    <!-- Main Content -->
+    <!-- =========================
+         MAIN
+    ========================== -->
 
     <main class="container">
 
-        <!-- Welcome -->
+
+        <!-- =========================
+             WELCOME
+        ========================== -->
 
         <section class="welcome">
 
-            <h1>Good morning 👋</h1>
+            <div>
 
-            <p>
-                Here's what needs your attention today.
-            </p>
+                <p class="eyebrow">
+                    YOUR STUDY COMMAND CENTER
+                </p>
+
+                <h1>
+                    Good morning 👋
+                </h1>
+
+                <p class="welcome-text">
+                    Here's what needs your attention today.
+                </p>
+
+            </div>
+
+            <div class="date-card">
+
+                <span>Today</span>
+
+                <strong>
+                    29 August
+                </strong>
+
+            </div>
 
         </section>
 
 
-        <!-- Top Cards -->
+        <!-- =========================
+             QUICK STATS
+        ========================== -->
 
-        <section class="top-section">
+        <section class="stats-grid">
 
-            <!-- Today's Focus -->
+            <div class="stat-card">
 
-            <div class="card focus-card">
+                <div class="stat-icon">
+                    📊
+                </div>
 
-                <span class="card-label">
-                    🎯 TODAY'S FOCUS
-                </span>
+                <div>
 
-                <h2>Economics</h2>
+                    <p>
+                        Average Score
+                    </p>
 
-                <p class="topic-name">
-                    Elasticity
+                    <h2>
+                        77.22%
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏱️
+                </div>
+
+                <div>
+
+                    <p>
+                        Study Time
+                    </p>
+
+                    <h2>
+                        2.39h
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon warning-icon">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <p>
+                        Weak Topics
+                    </p>
+
+                    <h2>
+                        9
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MAIN CARDS
+        ========================== -->
+
+        <section class="main-grid">
+
+
+            <!-- TODAY'S FOCUS -->
+
+            <div class="focus-card">
+
+                <div class="card-top">
+
+                    <span class="card-label">
+                        🎯 TODAY'S FOCUS
+                    </span>
+
+                    <span class="focus-badge">
+                        Needs Practice
+                    </span>
+
+                </div>
+
+                <h2>
+                    Economics
+                </h2>
+
+                <p class="focus-topic">
+                    Demand & Supply
                 </p>
 
-                <p class="score">
-                    Practice Score: <strong>56%</strong>
-                </p>
+                <div class="focus-score">
+
+                    <div>
+
+                        <span>
+                            Current score
+                        </span>
+
+                        <strong>
+                            63%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width: 63%;"
+                        ></div>
+
+                    </div>
+
+                </div>
 
                 <button class="primary-button">
-                    Study Topic
+                    Start Studying →
                 </button>
 
             </div>
 
 
-            <!-- Upcoming Exams -->
+            <!-- UPCOMING EXAMS -->
 
             <div class="card exams-card">
 
-                <span class="card-label">
-                    📅 UPCOMING EXAMS
-                </span>
+                <div class="card-header">
 
-                <div class="exam">
+                    <div>
 
-                    <span>Economics</span>
-                    <strong>12 Sep</strong>
+                        <span class="card-label">
+                            📅 UPCOMING
+                        </span>
+
+                        <h2>
+                            Exams
+                        </h2>
+
+                    </div>
+
+                    <button class="icon-button">
+                        →
+                    </button>
 
                 </div>
 
+
                 <div class="exam">
 
-                    <span>Accounting</span>
-                    <strong>15 Sep</strong>
+                    <div class="exam-info">
+
+                        <span class="exam-dot economics"></span>
+
+                        <div>
+
+                            <strong>
+                                Economics
+                            </strong>
+
+                            <small>
+                                14 days left
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        12 Sep
+                    </strong>
 
                 </div>
 
+
                 <div class="exam">
 
-                    <span>Marketing</span>
-                    <strong>18 Sep</strong>
+                    <div class="exam-info">
+
+                        <span class="exam-dot accounting"></span>
+
+                        <div>
+
+                            <strong>
+                                Accounting
+                            </strong>
+
+                            <small>
+                                17 days left
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        15 Sep
+                    </strong>
+
+                </div>
+
+
+                <div class="exam">
+
+                    <div class="exam-info">
+
+                        <span class="exam-dot marketing"></span>
+
+                        <div>
+
+                            <strong>
+                                Marketing
+                            </strong>
+
+                            <small>
+                                20 days left
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        18 Sep
+                    </strong>
 
                 </div>
 
@@ -117,9 +339,11 @@
         </section>
 
 
-        <!-- Weak Topics -->
+        <!-- =========================
+             WEAK TOPICS
+        ========================== -->
 
-        <section class="weak-section">
+        <section class="topics-card">
 
             <div class="section-header">
 
@@ -129,12 +353,18 @@
                         ⚠️ NEEDS ATTENTION
                     </span>
 
-                    <h2>Topics Needing Attention</h2>
+                    <h2>
+                        Topics to improve
+                    </h2>
+
+                    <p>
+                        Focus on these topics to improve your overall score.
+                    </p>
 
                 </div>
 
                 <button class="secondary-button">
-                    View All
+                    View All →
                 </button>
 
             </div>
@@ -142,16 +372,37 @@
 
             <div class="topics-list">
 
+
+                <!-- TOPIC 1 -->
+
                 <div class="topic">
 
                     <div class="topic-info">
 
-                        <span>Sale of Goods</span>
-                        <small>Business Law</small>
+                        <div class="topic-title">
+
+                            <strong>
+                                Sale of Goods
+                            </strong>
+
+                            <span class="subject-tag law">
+                                Business Law
+                            </span>
+
+                        </div>
+
+                        <div class="mini-progress">
+
+                            <div
+                                class="mini-progress-fill danger"
+                                style="width: 56%;"
+                            ></div>
+
+                        </div>
 
                     </div>
 
-                    <strong class="danger-score">
+                    <strong class="score danger">
                         56%
                     </strong>
 
@@ -162,16 +413,36 @@
                 </div>
 
 
+                <!-- TOPIC 2 -->
+
                 <div class="topic">
 
                     <div class="topic-info">
 
-                        <span>Consumer Protection</span>
-                        <small>Business Law</small>
+                        <div class="topic-title">
+
+                            <strong>
+                                Consumer Protection
+                            </strong>
+
+                            <span class="subject-tag law">
+                                Business Law
+                            </span>
+
+                        </div>
+
+                        <div class="mini-progress">
+
+                            <div
+                                class="mini-progress-fill danger"
+                                style="width: 56.5%;"
+                            ></div>
+
+                        </div>
 
                     </div>
 
-                    <strong class="danger-score">
+                    <strong class="score danger">
                         56.5%
                     </strong>
 
@@ -182,16 +453,36 @@
                 </div>
 
 
+                <!-- TOPIC 3 -->
+
                 <div class="topic">
 
                     <div class="topic-info">
 
-                        <span>Segmentation</span>
-                        <small>Marketing</small>
+                        <div class="topic-title">
+
+                            <strong>
+                                Segmentation
+                            </strong>
+
+                            <span class="subject-tag marketing">
+                                Marketing
+                            </span>
+
+                        </div>
+
+                        <div class="mini-progress">
+
+                            <div
+                                class="mini-progress-fill warning"
+                                style="width: 57.5%;"
+                            ></div>
+
+                        </div>
 
                     </div>
 
-                    <strong class="warning-score">
+                    <strong class="score warning">
                         57.5%
                     </strong>
 
@@ -202,16 +493,36 @@
                 </div>
 
 
+                <!-- TOPIC 4 -->
+
                 <div class="topic">
 
                     <div class="topic-info">
 
-                        <span>Final Accounts</span>
-                        <small>Accounting</small>
+                        <div class="topic-title">
+
+                            <strong>
+                                Final Accounts
+                            </strong>
+
+                            <span class="subject-tag accounting">
+                                Accounting
+                            </span>
+
+                        </div>
+
+                        <div class="mini-progress">
+
+                            <div
+                                class="mini-progress-fill warning"
+                                style="width: 59%;"
+                            ></div>
+
+                        </div>
 
                     </div>
 
-                    <strong class="warning-score">
+                    <strong class="score warning">
                         59%
                     </strong>
 
@@ -225,7 +536,17 @@
 
         </section>
 
+
     </main>
+
+
+    <footer>
+
+        <p>
+            StudyOS • Built for better studying.
+        </p>
+
+    </footer>
 
 
     <script src="script.js"></script>
