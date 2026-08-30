@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Set up StudyOS</title>
+<title>Set up Nivora</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="app-enhancements.css">
 </head>
 <body class="setup-page">
 <div class="ambient-background" aria-hidden="true"><span></span><span></span><span></span></div>
 <nav class="navbar">
-<a href="dashboard.html" class="logo">Study<span>OS</span></a>
+<a href="dashboard.html" class="logo">Nivora</a>
 <div class="nav-actions"><button class="theme-toggle" id="themeToggle"><span id="themeIcon">☀</span></button><button class="profile-button" id="profileButton">—</button></div>
 </nav>
 <main class="container setup-container">
-<header class="setup-hero"><p class="eyebrow">FIRST SETUP</p><h1>Build your study space.</h1><p class="welcome-text">Give StudyOS your curriculum and it can organize the subjects and topics for you. Review everything before it is added.</p></header>
+<header class="setup-hero"><p class="eyebrow">FIRST SETUP</p><h1>Build your learning space.</h1><p class="welcome-text">Give Nivora your curriculum and it can organize the subjects and topics for you. Review everything before it is added.</p></header>
 
 <section class="setup-card curriculum-card" id="curriculumCard">
-<div class="panel-heading"><div><p class="section-kicker">OPTION 01 · AI</p><h2>Upload your curriculum</h2><p class="section-description">Upload a text-based curriculum and StudyOS will identify the subjects and topics inside it.</p></div></div>
+<div class="panel-heading"><div><p class="section-kicker">OPTION 01 · ORGANIZE</p><h2>Upload your curriculum</h2><p class="section-description">Nivora first tries to read the structure already present in your curriculum. If it cannot confidently identify the structure, the AI organizer is used as a fallback.</p></div></div>
 <label class="upload-dropzone curriculum-dropzone" for="curriculumInput"><input id="curriculumInput" type="file" accept=".pdf,.txt,.md,.csv,.rtf"><strong id="curriculumFileLabel">Choose your curriculum</strong><span>PDF, TXT, MD, CSV or RTF</span></label>
-<button class="primary-button" id="analyzeCurriculum" type="button" disabled>Analyze curriculum →</button>
+<button class="primary-button" id="analyzeCurriculum" type="button" disabled>Organize curriculum →</button>
 <p class="setup-status" id="curriculumStatus"></p>
 </section>
 
 <section class="setup-card hidden" id="curriculumReview">
-<div class="panel-heading"><div><p class="section-kicker">OPTION 01 · REVIEW</p><h2>Here's what StudyOS found</h2><p class="section-description">Edit names, remove anything you do not need, or add another subject before saving.</p></div></div>
+<div class="panel-heading"><div><p class="section-kicker">REVIEW</p><h2>Here's what Nivora found</h2><p class="section-description">Edit names, remove anything you do not need, or add another subject before saving.</p></div></div>
 <div id="curriculumReviewList" class="curriculum-review-list"></div>
-<div class="review-actions"><button class="secondary-button" id="cancelCurriculum" type="button">← Back</button><button class="primary-button" id="acceptCurriculum" type="button">Add to my study space →</button></div>
+<div class="review-actions"><button class="secondary-button" id="cancelCurriculum" type="button">← Back</button><button class="primary-button" id="acceptCurriculum" type="button">Add to my learning space →</button></div>
 </section>
 
 <section class="setup-card manual-card">
@@ -62,7 +62,6 @@ import { analyzeCurriculum } from "./setup-curriculum.js";
 
 document.addEventListener("DOMContentLoaded", function () {
     if (!localStorage.getItem("studyOS-account")) { location.replace("index.html"); return; }
-
     if (typeof setupTheme === "function") setupTheme();
     if (typeof updateProfileButton === "function") updateProfileButton();
 
@@ -95,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
             review.scrollIntoView({ behavior: "smooth", block: "start" });
             status.textContent = "";
         } catch (error) {
-            status.textContent = error.message || "Could not analyze the curriculum.";
+            status.textContent = error.message || "Could not organize the curriculum.";
         } finally {
             analyzeButton.disabled = false;
         }
@@ -136,17 +135,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const removeTopic = event.target.dataset.removeTopic;
         const addTopic = event.target.dataset.addTopic;
         if (removeSubject !== undefined) { suggestedSubjects.splice(Number(removeSubject), 1); renderReview(); }
-        if (removeTopic) {
-            const [subjectIndex, topicIndex] = removeTopic.split(":").map(Number);
-            suggestedSubjects[subjectIndex].topics.splice(topicIndex, 1); renderReview();
-        }
+        if (removeTopic) { const [subjectIndex, topicIndex] = removeTopic.split(":").map(Number); suggestedSubjects[subjectIndex].topics.splice(topicIndex, 1); renderReview(); }
         if (addTopic !== undefined) { suggestedSubjects[Number(addTopic)].topics.push("New topic"); renderReview(); }
     });
 
-    document.getElementById("cancelCurriculum").onclick = function () {
-        review.classList.add("hidden");
-        document.getElementById("curriculumCard").classList.remove("hidden");
-    };
+    document.getElementById("cancelCurriculum").onclick = function () { review.classList.add("hidden"); document.getElementById("curriculumCard").classList.remove("hidden"); };
 
     document.getElementById("acceptCurriculum").onclick = function () {
         const subjects = studyOSStorage.getSubjects();
@@ -156,37 +149,23 @@ document.addEventListener("DOMContentLoaded", function () {
             let base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "subject";
             let id = base, n = 2;
             while (subjects[id]) id = base + "-" + n++;
-            subjects[id] = {
-                name,
-                description: String(subject.description || "").trim(),
-                icon: "•",
-                averageScore: 0,
-                studyTime: 0,
-                topics: Array.from(new Set((subject.topics || []).map(topic => String(topic).trim()).filter(Boolean))).map(topic => ({ name: topic, score: 0 }))
-            };
+            subjects[id] = { name, description: String(subject.description || "").trim(), icon: "•", averageScore: 0, studyTime: 0, topics: Array.from(new Set((subject.topics || []).map(topic => String(topic).trim()).filter(Boolean))).map(topic => ({ name: topic, score: 0 })) };
         });
         studyOSStorage.saveSubjects(subjects);
         location.href = "dashboard.html";
     };
 
-    /* Existing manual setup */
-    const subjectForm = document.getElementById("setupSubjectForm");
-    const subjectsEl = document.getElementById("setupSubjects");
-    const subjectSelect = document.getElementById("materialSubjectSelect");
-    const topicSelect = document.getElementById("topicSubjectSelect");
-    const topicList = document.getElementById("setupTopicList");
-    const materialList = document.getElementById("setupMaterials");
-
+    const subjectForm = document.getElementById("setupSubjectForm"), subjectsEl = document.getElementById("setupSubjects"), subjectSelect = document.getElementById("materialSubjectSelect"), topicSelect = document.getElementById("topicSubjectSelect"), topicList = document.getElementById("setupTopicList"), materialList = document.getElementById("setupMaterials");
     function subjects() { return studyOSStorage.getSubjects(); }
     function save(s) { studyOSStorage.saveSubjects(s); render(); }
     function render() {
-        const s = subjects(); const entries = Object.entries(s);
+        const s = subjects(), entries = Object.entries(s);
         subjectsEl.innerHTML = entries.length ? entries.map(([id, x]) => `<div class="setup-item"><div><strong>${escapeHTML(x.name)}</strong><span>${(x.topics || []).length} topics</span></div><button data-remove-subject="${id}" type="button">Remove</button></div>`).join("") : '<p class="muted-message">No subjects added yet.</p>';
         const options = entries.map(([id, x]) => `<option value="${id}">${escapeHTML(x.name)}</option>`).join("");
         subjectSelect.innerHTML = entries.length ? '<option value="">Select a subject</option>' + options : '<option value="">Create a subject first</option>';
         topicSelect.innerHTML = entries.length ? '<option value="">Select a subject</option>' + options : '<option value="">Create a subject first</option>';
         const selected = topicSelect.value || entries[0]?.[0];
-        topicList.innerHTML = selected && s[selected] ? ((s[selected].topics || []).length ? (s[selected].topics || []).map(t => `<div class="setup-item"><span>${escapeHTML(t.name)}</span><span>${Number(t.score || 0)}%</span></div>`).join("") : '<p class="muted-message">No topics yet.</p>') : '<p class="muted-message">Select a subject to see its topics.</p>';
+        topicList.innerHTML = selected && s[selected] ? ((s[selected].topics || []).length ? s[selected].topics.map(t => `<div class="setup-item"><span>${escapeHTML(t.name)}</span><span>${Number(t.score || 0)}%</span></div>`).join("") : '<p class="muted-message">No topics yet.</p>') : '<p class="muted-message">Select a subject to see its topics.</p>';
     }
     subjectsEl.addEventListener("click", e => { const id = e.target.dataset.removeSubject; if (!id) return; const s = subjects(); delete s[id]; save(s); });
     subjectForm.addEventListener("submit", e => { e.preventDefault(); const name = document.getElementById("setupSubjectName").value.trim(); if (!name) return; const s = subjects(); let base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "subject", id = base, n = 2; while (s[id]) id = base + "-" + n++; s[id] = { name, description: document.getElementById("setupSubjectDescription").value.trim(), icon: "•", averageScore: 0, studyTime: 0, topics: [] }; save(s); subjectForm.reset(); });
