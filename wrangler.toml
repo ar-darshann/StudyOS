@@ -1,7 +1,6 @@
-name = "studyos"
+name = "nivora"
 compatibility_date = "2026-08-22"
 pages_build_output_dir = "."
 
 [ai]
 binding = "AI"
-
