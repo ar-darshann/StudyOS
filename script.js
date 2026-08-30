@@ -1,450 +1,208 @@
 document.addEventListener("DOMContentLoaded", function () {
-
     setupTheme();
+    setupAccountUI();
+    updateProfileButton();
 
-    if (document.getElementById("dashboardAverage")) {
-        loadDashboard();
-    }
+    const dashboard = document.getElementById("dashboardAverage");
+    const subjectsGrid = document.getElementById("subjectsGrid");
+    const subjectName = document.getElementById("subjectName");
 
-    if (document.getElementById("subjectsGrid")) {
-        loadSubjectsPage();
-        setupSubjectModal();
-    }
+    if (dashboard) loadDashboard();
+    if (subjectsGrid) { requireAccount(); loadSubjectsPage(); setupSubjectModal(); }
+    if (subjectName) { requireAccount(); loadSubjectPage(); setupTopicModal(); setupMaterialUpload(); }
 
-    if (document.getElementById("subjectName")) {
-        loadSubjectPage();
-    }
-
+    setupPageTransitions();
 });
 
+function getAccount() {
+    try { return JSON.parse(localStorage.getItem("studyOS-account")); } catch { return null; }
+}
 
-/* =========================================
-   THEME
-========================================= */
+function requireAccount() {
+    if (!getAccount()) window.location.replace("index.html");
+}
 
 function setupTheme() {
     const toggle = document.getElementById("themeToggle");
     const icon = document.getElementById("themeIcon");
-
     if (!toggle || !icon) return;
-
-    const savedTheme = localStorage.getItem("studyOS-theme");
-
-    if (savedTheme === "light") {
-        document.body.classList.add("light");
-        icon.textContent = "☾";
-    } else {
-        document.body.classList.remove("light");
-        icon.textContent = "☀";
-    }
-
-    toggle.addEventListener("click", function () {
+    const light = localStorage.getItem("studyOS-theme") === "light";
+    document.body.classList.toggle("light", light);
+    icon.textContent = light ? "☾" : "☀";
+    toggle.onclick = function () {
         const isLight = document.body.classList.toggle("light");
         localStorage.setItem("studyOS-theme", isLight ? "light" : "dark");
         icon.textContent = isLight ? "☾" : "☀";
-    });
+    };
 }
 
-
-/* =========================================
-   DATA HELPERS
-========================================= */
+function updateProfileButton() {
+    const button = document.getElementById("profileButton");
+    const account = getAccount();
+    if (!button || !account) return;
+    button.textContent = (account.name || "?").trim().charAt(0).toUpperCase() || "?";
+    button.title = account.name || "Profile";
+}
 
 function getSubjects() {
-    if (typeof studyOSData === "undefined") {
-        console.error("StudyOS data could not be loaded.");
-        return {};
-    }
-    return studyOSData.subjects || {};
+    return window.studyOSStorage ? window.studyOSStorage.getSubjects() : {};
 }
 
 function saveSubjects(subjects) {
-    studyOSData.subjects = subjects;
-    if (window.studyOSStorage) {
-        window.studyOSStorage.saveSubjects(subjects);
-    }
+    if (window.studyOSStorage) window.studyOSStorage.saveSubjects(subjects);
 }
 
 function calculateSubjectAverage(subject) {
-    if (!subject.topics || subject.topics.length === 0) {
-        return Number(subject.averageScore) || 0;
-    }
-
-    const total = subject.topics.reduce(function (sum, topic) {
-        return sum + Number(topic.score || 0);
-    }, 0);
-
-    return total / subject.topics.length;
+    const topics = subject.topics || [];
+    if (!topics.length) return Number(subject.averageScore || 0);
+    return topics.reduce((sum, topic) => sum + Number(topic.score || 0), 0) / topics.length;
 }
 
 function formatScore(score) {
-    const rounded = Math.round(score * 100) / 100;
-    return `${Number.isInteger(rounded) ? rounded : rounded.toFixed(2)}%`;
+    const value = Math.round(Number(score || 0) * 100) / 100;
+    return `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
 }
 
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+}
 
-/* =========================================
-   DASHBOARD
-========================================= */
+function escapeHTML(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
+}
 
 function loadDashboard() {
-    const subjects = getSubjects();
-    const entries = Object.entries(subjects);
-    const allTopics = [];
-    let totalStudyTime = 0;
-    let totalSubjectScore = 0;
+    requireAccount();
+    const account = getAccount();
+    const entries = Object.entries(getSubjects());
+    const topics = [];
+    let studyTime = 0;
+    let scoreTotal = 0;
 
-    entries.forEach(function ([id, subject]) {
-        totalStudyTime += Number(subject.studyTime || 0);
-        totalSubjectScore += calculateSubjectAverage(subject);
-
-        (subject.topics || []).forEach(function (topic) {
-            allTopics.push({
-                subjectId: id,
-                subjectName: subject.name,
-                name: topic.name,
-                score: Number(topic.score || 0)
-            });
-        });
+    setText("dashboardGreeting", account ? `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${account.name.split(" ")[0]}.` : "Welcome.");
+    entries.forEach(([id, subject]) => {
+        scoreTotal += calculateSubjectAverage(subject);
+        studyTime += Number(subject.studyTime || 0);
+        (subject.topics || []).forEach(topic => topics.push({ subjectId: id, subjectName: subject.name, name: topic.name, score: Number(topic.score || 0) }));
     });
 
-    const averageScore = entries.length
-        ? totalSubjectScore / entries.length
-        : 0;
-
-    const weakTopics = allTopics.filter(function (topic) {
-        return topic.score < 60;
-    });
-
-    setText("dashboardAverage", entries.length ? formatScore(averageScore) : "—");
-    setText("dashboardStudyTime", entries.length ? `${round(totalStudyTime, 2)}h` : "—");
-    setText("dashboardWeakTopics", entries.length ? weakTopics.length : "—");
-
-    setTodayDate();
-    loadDashboardFocus(entries, allTopics);
-    loadDashboardSubjects(entries);
-    loadDashboardTopics(allTopics);
-}
-
-function loadDashboardFocus(entries, allTopics) {
-    const focusSubject = document.getElementById("focusSubject");
-    const focusTopic = document.getElementById("focusTopic");
-    const focusScore = document.getElementById("focusScore");
-    const focusProgress = document.getElementById("focusProgress");
-    const focusLink = document.getElementById("focusLink");
-
-    if (!focusSubject) return;
-
-    if (allTopics.length === 0) {
-        if (entries.length === 0) {
-            focusSubject.textContent = "Add your first subject";
-            focusTopic.textContent = "Your study space is ready for you.";
-            focusScore.textContent = "";
-            focusProgress.style.width = "0%";
-            focusLink.href = "subjectui.html";
-            focusLink.innerHTML = "Add a subject <span>→</span>";
-            return;
-        }
-
-        const weakest = entries.slice().sort(function (a, b) {
-            return calculateSubjectAverage(a[1]) - calculateSubjectAverage(b[1]);
-        })[0];
-
-        focusSubject.textContent = weakest[1].name;
-        focusTopic.textContent = "Add topics to start tracking this subject.";
-        focusScore.textContent = formatScore(calculateSubjectAverage(weakest[1]));
-        focusProgress.style.width = `${Math.max(0, Math.min(100, calculateSubjectAverage(weakest[1])))}%`;
-        focusLink.href = `subjects.html?subject=${encodeURIComponent(weakest[0])}`;
-        focusLink.innerHTML = "Open subject <span>→</span>";
-        return;
+    setText("dashboardAverage", entries.length ? formatScore(scoreTotal / entries.length) : "—");
+    setText("dashboardStudyTime", entries.length ? `${Math.round(studyTime * 100) / 100}h` : "—");
+    setText("dashboardWeakTopics", entries.length ? topics.filter(t => t.score < 60).length : "—");
+    const sorted = topics.slice().sort((a, b) => a.score - b.score);
+    const focus = sorted[0];
+    if (focus) {
+        setText("focusSubject", focus.subjectName); setText("focusTopic", focus.name); setText("focusScore", formatScore(focus.score));
+        const progress = document.getElementById("focusProgress"); if (progress) progress.style.width = `${Math.max(0, Math.min(100, focus.score))}%`;
+        const link = document.getElementById("focusLink"); if (link) { link.href = `subjects.html?subject=${encodeURIComponent(focus.subjectId)}`; link.innerHTML = "Continue studying <span>→</span>"; }
+    } else {
+        setText("focusSubject", entries.length ? entries[0][1].name : "Add your first subject");
+        setText("focusTopic", entries.length ? "Add topics to start tracking progress." : "Your study space is ready for you.");
+        setText("focusScore", entries.length ? formatScore(calculateSubjectAverage(entries[0][1])) : "");
+        const link = document.getElementById("focusLink"); if (link) { link.href = "subjectui.html"; link.innerHTML = entries.length ? "Open subject <span>→</span>" : "Add a subject <span>→</span>"; }
     }
-
-    const weakestTopic = allTopics.slice().sort(function (a, b) {
-        return a.score - b.score;
-    })[0];
-
-    focusSubject.textContent = weakestTopic.subjectName;
-    focusTopic.textContent = weakestTopic.name;
-    focusScore.textContent = formatScore(weakestTopic.score);
-    focusProgress.style.width = `${Math.max(0, Math.min(100, weakestTopic.score))}%`;
-    focusLink.href = `subjects.html?subject=${encodeURIComponent(weakestTopic.subjectId)}`;
-    focusLink.innerHTML = "Continue studying <span>→</span>";
+    loadDashboardSubjects(entries);
+    loadDashboardTopics(sorted);
+    const date = document.getElementById("todayDate"); if (date) date.textContent = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
 function loadDashboardSubjects(entries) {
-    const container = document.getElementById("dashboardSubjects");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    if (entries.length === 0) {
-        container.innerHTML = '<p class="muted-message">No subjects yet. Add one from the Subjects page.</p>';
-        return;
-    }
-
-    entries.slice(0, 4).forEach(function ([id, subject]) {
-        const average = calculateSubjectAverage(subject);
-        const row = document.createElement("a");
-
-        row.href = `subjects.html?subject=${encodeURIComponent(id)}`;
-        row.className = "dashboard-subject-row";
-        row.innerHTML = `
-            <span class="subject-name">${escapeHTML(subject.name)}</span>
-            <span class="subject-row-score">${formatScore(average)} <span>→</span></span>
-        `;
-
-        container.appendChild(row);
+    const container = document.getElementById("dashboardSubjects"); if (!container) return;
+    container.innerHTML = entries.length ? "" : '<p class="muted-message">No subjects yet. Add your first one.</p>';
+    entries.slice(0, 5).forEach(([id, subject]) => {
+        const a = document.createElement("a"); a.className = "dashboard-subject-row"; a.href = `subjects.html?subject=${encodeURIComponent(id)}`;
+        a.innerHTML = `<span class="subject-name">${escapeHTML(subject.name)}</span><span class="subject-row-score">${formatScore(calculateSubjectAverage(subject))} <span>→</span></span>`;
+        container.appendChild(a);
     });
 }
 
-function loadDashboardTopics(allTopics) {
-    const container = document.getElementById("dashboardTopics");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    const weakest = allTopics.slice().sort(function (a, b) {
-        return a.score - b.score;
-    }).slice(0, 5);
-
-    if (weakest.length === 0) {
-        container.innerHTML = '<p class="muted-message">No topic data yet. Add topics inside a subject to see focus areas here.</p>';
-        return;
-    }
-
-    weakest.forEach(function (topic) {
-        const row = document.createElement("a");
-        row.className = "attention-row";
-        row.href = `subjects.html?subject=${encodeURIComponent(topic.subjectId)}`;
-        row.innerHTML = `
-            <div>
-                <strong>${escapeHTML(topic.name)}</strong>
-                <span>${escapeHTML(topic.subjectName)}</span>
-            </div>
-            <strong class="attention-score">${formatScore(topic.score)}</strong>
-        `;
-        container.appendChild(row);
+function loadDashboardTopics(topics) {
+    const container = document.getElementById("dashboardTopics"); if (!container) return;
+    const weakest = topics.slice(0, 5); container.innerHTML = weakest.length ? "" : '<p class="muted-message">Add topics inside your subjects to see focus areas here.</p>';
+    weakest.forEach(topic => {
+        const a = document.createElement("a"); a.className = "attention-row"; a.href = `subjects.html?subject=${encodeURIComponent(topic.subjectId)}`;
+        a.innerHTML = `<div><strong>${escapeHTML(topic.name)}</strong><span>${escapeHTML(topic.subjectName)}</span></div><strong class="attention-score">${formatScore(topic.score)}</strong>`;
+        container.appendChild(a);
     });
 }
-
-function setTodayDate() {
-    const element = document.getElementById("todayDate");
-    if (!element) return;
-
-    element.textContent = new Date().toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
-}
-
-
-/* =========================================
-   SUBJECT LIST
-========================================= */
 
 function loadSubjectsPage() {
-    const grid = document.getElementById("subjectsGrid");
-    const emptyState = document.getElementById("emptySubjects");
-
+    const grid = document.getElementById("subjectsGrid"), empty = document.getElementById("emptySubjects");
     if (!grid) return;
-
-    const entries = Object.entries(getSubjects());
-    grid.innerHTML = "";
-
-    if (entries.length === 0) {
-        grid.classList.add("hidden");
-        if (emptyState) emptyState.classList.remove("hidden");
-        return;
-    }
-
-    grid.classList.remove("hidden");
-    if (emptyState) emptyState.classList.add("hidden");
-
-    entries.forEach(function ([id, subject]) {
-        const average = calculateSubjectAverage(subject);
-        const card = document.createElement("article");
-        card.className = "subject-card";
-
-        card.innerHTML = `
-            <div class="subject-card-header">
-                <div class="subject-icon">${escapeHTML(subject.icon || "•")}</div>
-                <span>${subject.topics ? subject.topics.length : 0} topics</span>
-            </div>
-            <h2>${escapeHTML(subject.name)}</h2>
-            <p>${escapeHTML(subject.description || "No description yet.")}</p>
-            <div class="subject-score-line">
-                <span>Average score</span>
-                <strong>${formatScore(average)}</strong>
-            </div>
-            <div class="progress-track">
-                <div class="progress-value" style="width:${Math.max(0, Math.min(100, average))}%"></div>
-            </div>
-            <a class="card-link" href="subjects.html?subject=${encodeURIComponent(id)}">Open subject <span>→</span></a>
-        `;
-
+    const entries = Object.entries(getSubjects()); grid.innerHTML = "";
+    grid.classList.toggle("hidden", !entries.length); if (empty) empty.classList.toggle("hidden", !!entries.length);
+    entries.forEach(([id, subject]) => {
+        const card = document.createElement("article"); card.className = "subject-card";
+        const avg = calculateSubjectAverage(subject);
+        card.innerHTML = `<div class="subject-card-header"><div class="subject-icon">${escapeHTML(subject.icon || "•")}</div><span>${(subject.topics || []).length} topics</span></div><h2>${escapeHTML(subject.name)}</h2><p>${escapeHTML(subject.description || "")}</p><div class="subject-score-line"><span>Average score</span><strong>${formatScore(avg)}</strong></div><div class="progress-track"><div class="progress-value" style="width:${Math.max(0, Math.min(100, avg))}%"></div></div><a class="card-link" href="subjects.html?subject=${encodeURIComponent(id)}">Open subject <span>→</span></a>`;
         grid.appendChild(card);
     });
 }
 
-
-/* =========================================
-   ADD SUBJECT
-========================================= */
-
 function setupSubjectModal() {
-    const modal = document.getElementById("subjectModal");
-    const openButton = document.getElementById("addSubjectButton");
-    const emptyOpenButton = document.getElementById("emptyAddSubjectButton");
-    const closeButton = document.getElementById("closeSubjectModal");
-    const cancelButton = document.getElementById("cancelSubjectButton");
-    const form = document.getElementById("subjectForm");
-
-    if (!modal || !form) return;
-
-    function openModal() {
-        modal.classList.remove("hidden");
-        modal.setAttribute("aria-hidden", "false");
-        document.body.classList.add("modal-open");
-        document.getElementById("subjectNameInput").focus();
-    }
-
-    function closeModal() {
-        modal.classList.add("hidden");
-        modal.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("modal-open");
-        form.reset();
-    }
-
-    if (openButton) openButton.addEventListener("click", openModal);
-    if (emptyOpenButton) emptyOpenButton.addEventListener("click", openModal);
-    if (closeButton) closeButton.addEventListener("click", closeModal);
-    if (cancelButton) cancelButton.addEventListener("click", closeModal);
-
-    modal.addEventListener("click", function (event) {
-        if (event.target.hasAttribute("data-close-modal")) closeModal();
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
-    });
-
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const name = document.getElementById("subjectNameInput").value.trim();
-        const description = document.getElementById("subjectDescriptionInput").value.trim();
-        if (!name) return;
-
-        const subjects = getSubjects();
-        const id = createUniqueSubjectId(name, subjects);
-
-        subjects[id] = {
-            name: name,
-            icon: "•",
-            description: description || "A new StudyOS subject.",
-            averageScore: 0,
-            studyTime: 0,
-            topics: []
-        };
-
-        saveSubjects(subjects);
-        closeModal();
-        loadSubjectsPage();
+    const modal = document.getElementById("subjectModal"), form = document.getElementById("subjectForm"); if (!modal || !form) return;
+    const open = () => { modal.classList.remove("hidden"); document.body.classList.add("modal-open"); setTimeout(() => document.getElementById("subjectNameInput")?.focus(), 100); };
+    const close = () => { modal.classList.add("hidden"); document.body.classList.remove("modal-open"); form.reset(); };
+    document.getElementById("addSubjectButton")?.addEventListener("click", open); document.getElementById("emptyAddSubjectButton")?.addEventListener("click", open); document.getElementById("closeSubjectModal")?.addEventListener("click", close); document.getElementById("cancelSubjectButton")?.addEventListener("click", close);
+    modal.querySelector("[data-close-modal]")?.addEventListener("click", close);
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); const name = document.getElementById("subjectNameInput").value.trim(); const description = document.getElementById("subjectDescriptionInput").value.trim(); if (!name) return;
+        const subjects = getSubjects(); const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "subject"; let id = base, n = 2; while (subjects[id]) id = `${base}-${n++}`;
+        subjects[id] = { name, description: description || "", icon: "•", averageScore: 0, studyTime: 0, topics: [] }; saveSubjects(subjects); close(); loadSubjectsPage();
     });
 }
-
-function createUniqueSubjectId(name, subjects) {
-    const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "subject";
-    let id = base;
-    let number = 2;
-
-    while (subjects[id]) {
-        id = `${base}-${number}`;
-        number += 1;
-    }
-
-    return id;
-}
-
-
-/* =========================================
-   INDIVIDUAL SUBJECT PAGE
-========================================= */
 
 function loadSubjectPage() {
-    const params = new URLSearchParams(window.location.search);
-    const subjectId = params.get("subject");
-    const subject = getSubjects()[subjectId];
+    const id = new URLSearchParams(location.search).get("subject"), subject = getSubjects()[id];
+    if (!subject) { setText("subjectName", "Subject not found"); setText("subjectDescription", "This subject is no longer available."); return; }
+    document.title = `${subject.name} | StudyOS`; setText("subjectName", subject.name); setText("subjectDescription", subject.description || ""); setText("subjectIcon", subject.icon || "•"); setText("subjectAverage", formatScore(calculateSubjectAverage(subject))); setText("subjectTopics", (subject.topics || []).length); setText("subjectStudyTime", `${Number(subject.studyTime || 0)}h`);
+    renderTopics(subject); loadMaterials(id);
+}
 
-    if (!subject) {
-        setText("subjectName", "Subject not found");
-        setText("subjectDescription", "This subject does not exist in your StudyOS data.");
-        setText("subjectAverage", "—");
-        setText("subjectTopics", "—");
-        setText("subjectStudyTime", "—");
-        return;
-    }
+function renderTopics(subject) {
+    const list = document.getElementById("subjectTopicsList"); if (!list) return; list.innerHTML = "";
+    if (!(subject.topics || []).length) { list.innerHTML = '<div class="empty-topic-state"><h3>No topics yet.</h3><p>Add the topics you want to study.</p></div>'; return; }
+    subject.topics.forEach(topic => { const row = document.createElement("div"); row.className = "subject-topic-row"; row.innerHTML = `<div><strong>${escapeHTML(topic.name)}</strong><div class="progress-track topic-progress"><div class="progress-value" style="width:${Math.max(0, Math.min(100, Number(topic.score || 0)))}%"></div></div></div><strong>${formatScore(topic.score)}</strong>`; list.appendChild(row); });
+}
 
-    document.title = `${subject.name} | StudyOS`;
-    setText("subjectName", subject.name);
-    setText("subjectDescription", subject.description || "");
-    setText("subjectIcon", subject.icon || "•");
-    setText("subjectAverage", formatScore(calculateSubjectAverage(subject)));
-    setText("subjectTopics", subject.topics ? subject.topics.length : 0);
-    setText("subjectStudyTime", `${round(Number(subject.studyTime || 0), 2)}h`);
+function setupTopicModal() {
+    const modal = document.getElementById("topicModal"), form = document.getElementById("topicForm"); if (!modal || !form) return;
+    const close = () => { modal.classList.add("hidden"); document.body.classList.remove("modal-open"); form.reset(); };
+    document.getElementById("addTopicButton")?.addEventListener("click", () => { modal.classList.remove("hidden"); document.body.classList.add("modal-open"); }); document.getElementById("closeTopicModal")?.addEventListener("click", close); document.getElementById("cancelTopicButton")?.addEventListener("click", close); modal.querySelector("[data-close-topic]")?.addEventListener("click", close);
+    form.addEventListener("submit", function (e) { e.preventDefault(); const id = new URLSearchParams(location.search).get("subject"); const subjects = getSubjects(); if (!subjects[id]) return; const name = document.getElementById("topicNameInput").value.trim(); if (!name) return; subjects[id].topics.push({ name, score: 0 }); saveSubjects(subjects); close(); loadSubjectPage(); });
+}
 
-    const list = document.getElementById("subjectTopicsList");
-    if (!list) return;
+function setupMaterialUpload() {
+    const input = document.getElementById("materialInput"); if (!input) return;
+    input.addEventListener("change", async function () {
+        const id = new URLSearchParams(location.search).get("subject");
+        for (const file of Array.from(input.files || [])) {
+            try { await window.studyOSStorage.addMaterial({ id: crypto.randomUUID(), subjectId: id, name: file.name, type: file.type || "application/octet-stream", size: file.size, addedAt: new Date().toISOString(), blob: file }); }
+            catch (error) { console.error("Could not save material", error); alert("This file could not be saved in this browser."); }
+        }
+        input.value = ""; loadMaterials(id);
+    });
+}
 
-    list.innerHTML = "";
-
-    if (!subject.topics || subject.topics.length === 0) {
-        list.innerHTML = `
-            <div class="empty-topic-state">
-                <h3>No topics yet.</h3>
-                <p>This subject is ready. Topic management is our next step.</p>
-            </div>
-        `;
-        return;
-    }
-
-    subject.topics.forEach(function (topic) {
-        const row = document.createElement("div");
-        row.className = "subject-topic-row";
-        row.innerHTML = `
-            <div>
-                <strong>${escapeHTML(topic.name)}</strong>
-                <div class="progress-track topic-progress">
-                    <div class="progress-value" style="width:${Math.max(0, Math.min(100, Number(topic.score || 0)))}%"></div>
-                </div>
-            </div>
-            <strong>${formatScore(Number(topic.score || 0))}</strong>
-        `;
+async function loadMaterials(subjectId) {
+    const list = document.getElementById("materialList"); if (!list || !window.studyOSStorage) return;
+    const materials = await window.studyOSStorage.getMaterials(subjectId); list.innerHTML = "";
+    if (!materials.length) { list.innerHTML = '<p class="muted-message">No material added yet.</p>'; return; }
+    materials.sort((a,b) => new Date(b.addedAt) - new Date(a.addedAt)).forEach(material => {
+        const row = document.createElement("div"); row.className = "material-row";
+        const size = material.size < 1048576 ? `${Math.max(1, Math.round(material.size / 1024))} KB` : `${(material.size / 1048576).toFixed(1)} MB`;
+        row.innerHTML = `<div class="material-info"><strong>${escapeHTML(material.name)}</strong><span>${escapeHTML(material.type || "File")} · ${size}</span></div><div class="material-actions"><button class="text-button material-open" data-id="${material.id}">Open</button><button class="material-delete" data-id="${material.id}" aria-label="Delete ${escapeHTML(material.name)}">Delete</button></div>`;
+        row.querySelector(".material-open").onclick = () => { const url = URL.createObjectURL(material.blob); window.open(url, "_blank", "noopener"); setTimeout(() => URL.revokeObjectURL(url), 60000); };
+        row.querySelector(".material-delete").onclick = async () => { await window.studyOSStorage.deleteMaterial(material.id); loadMaterials(subjectId); };
         list.appendChild(row);
     });
 }
 
-
-/* =========================================
-   UTILITIES
-========================================= */
-
-function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-}
-
-function round(value, decimals) {
-    const factor = Math.pow(10, decimals);
-    return Math.round(value * factor) / factor;
-}
-
-function escapeHTML(value) {
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+function setupPageTransitions() {
+    document.body.classList.add("page-ready");
+    document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute("href"); if (!href || href.startsWith("#") || href.startsWith("http") || link.target === "_blank") return;
+        link.addEventListener("click", function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; e.preventDefault(); document.body.classList.add("page-exit"); setTimeout(() => location.href = href, 150); });
+    });
 }
