@@ -1,237 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject | StudyOS</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
-    <!-- NAVIGATION -->
-
     <nav class="navbar">
-
-        <div class="logo">
-            Study<span>OS</span>
-        </div>
-
+        <a href="index.html" class="logo">Study<span>OS</span></a>
         <div class="nav-links">
-
-            <a href="index.html">
-                Dashboard
-            </a>
-
-            <a
-                href="subjects.html"
-                class="active"
-            >
-                Subjects
-            </a>
-
-            <a href="#">
-                Progress
-            </a>
-
+            <a href="index.html">Dashboard</a>
+            <a href="subjectui.html" class="active">Subjects</a>
+            <a href="#" class="disabled-link">Progress</a>
         </div>
-
         <div class="nav-actions">
-
-            <button
-                class="theme-toggle"
-                id="themeToggle"
-                aria-label="Toggle light and dark mode"
-            >
-                <span id="themeIcon">☀️</span>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span id="themeIcon">☀</span>
             </button>
-
-            <button class="profile-button">
-                SD
-            </button>
-
+            <button class="profile-button" aria-label="Profile">SD</button>
         </div>
-
     </nav>
 
-
-    <!-- MAIN -->
-
     <main class="container">
+        <a href="subjectui.html" class="back-link">← Subjects</a>
 
-        <a
-            href="subjects.html"
-            class="back-link"
-        >
-            ← Back to Subjects
-        </a>
-
-
-        <!-- SUBJECT HEADER -->
-
-        <section class="subject-page-header">
-
+        <header class="subject-page-header">
             <div>
-
-                <p class="eyebrow">
-                    SUBJECT
-                </p>
-
-                <h1 id="subjectName">
-                    Loading...
-                </h1>
-
-                <p
-                    class="welcome-text"
-                    id="subjectDescription"
-                >
-                    Loading subject information...
-                </p>
-
+                <p class="eyebrow">SUBJECT</p>
+                <h1 id="subjectName">Loading...</h1>
+                <p class="welcome-text" id="subjectDescription">Loading...</p>
             </div>
+            <div class="subject-main-icon" id="subjectIcon">•</div>
+        </header>
 
-            <div
-                class="subject-main-icon"
-                id="subjectIcon"
-            >
-                📚
+        <section class="stats-grid subject-stats">
+            <div class="stat-card">
+                <span class="stat-label">Average score</span>
+                <strong id="subjectAverage">—</strong>
             </div>
-
+            <div class="stat-card">
+                <span class="stat-label">Topics</span>
+                <strong id="subjectTopics">—</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Study time</span>
+                <strong id="subjectStudyTime">—</strong>
+            </div>
         </section>
 
-
-        <!-- SUBJECT STATS -->
-
-        <section class="stats-grid">
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    📊
-                </div>
-
+        <section class="simple-section">
+            <div class="section-heading-row">
                 <div>
-
-                    <p>
-                        Average Score
-                    </p>
-
-                    <h2 id="subjectAverage">
-                        --
-                    </h2>
-
+                    <p class="section-kicker">TOPICS</p>
+                    <h2>Your topics</h2>
                 </div>
-
             </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    📚
-                </div>
-
-                <div>
-
-                    <p>
-                        Topics
-                    </p>
-
-                    <h2 id="subjectTopics">
-                        --
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    ⏱️
-                </div>
-
-                <div>
-
-                    <p>
-                        Study Time
-                    </p>
-
-                    <h2 id="subjectStudyTime">
-                        --
-                    </h2>
-
-                </div>
-
-            </div>
-
+            <div id="subjectTopicsList" class="subject-topics-list"></div>
         </section>
-
-
-        <!-- TOPICS -->
-
-        <section class="topics-card">
-
-            <div class="section-header">
-
-                <div>
-
-                    <span class="card-label">
-                        📚 TOPICS
-                    </span>
-
-                    <h2>
-                        Your Topics
-                    </h2>
-
-                    <p>
-                        Your performance across each topic.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- JAVASCRIPT CREATES TOPIC ROWS HERE -->
-
-            <div id="subjectTopicsList">
-
-            </div>
-
-        </section>
-
     </main>
 
-
     <footer>
-
-        <p>
-            StudyOS • Built for better studying.
-        </p>
-
+        <p>StudyOS</p>
     </footer>
 
-
-    <!-- DATA -->
-
     <script src="data/sample-data.js"></script>
-
-    <!-- APPLICATION -->
-
+    <script src="data/storage.js"></script>
     <script src="script.js"></script>
-
 </body>
-
 </html>
