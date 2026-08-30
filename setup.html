@@ -9,10 +9,20 @@
 </head>
 <body class="setup-page">
 <div class="ambient-background" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<div class="analysis-overlay" id="analysisOverlay" aria-hidden="true" role="status" aria-live="polite">
+    <div class="analysis-modal">
+        <div class="analysis-n" aria-hidden="true"></div>
+        <div class="analysis-title">Nivora is organizing your curriculum</div>
+        <div class="analysis-subtitle">Reading the structure and identifying subjects and topics<span class="analysis-dots" aria-hidden="true"><span></span><span></span><span></span></span></div>
+    </div>
+</div>
+
 <nav class="navbar">
 <a href="dashboard.html" class="logo">Nivora</a>
 <div class="nav-actions"><button class="theme-toggle" id="themeToggle"><span id="themeIcon">☀</span></button><button class="profile-button" id="profileButton">—</button></div>
 </nav>
+
 <main class="container setup-container">
 <header class="setup-hero"><p class="eyebrow">FIRST SETUP</p><h1>Build your learning space.</h1><p class="welcome-text">Give Nivora your curriculum and it can organize the subjects and topics for you. Review everything before it is added.</p></header>
 
@@ -55,6 +65,7 @@
 
 <div class="setup-footer"><button class="secondary-button" id="skipSetup" type="button">I'll do this later</button><button class="primary-button" id="finishSetup" type="button">Finish setup →</button></div>
 </main>
+
 <script src="data/storage.js"></script>
 <script src="script.js"></script>
 <script type="module">
@@ -71,7 +82,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const status = document.getElementById("curriculumStatus");
     const review = document.getElementById("curriculumReview");
     const reviewList = document.getElementById("curriculumReviewList");
+    const analysisOverlay = document.getElementById("analysisOverlay");
     let suggestedSubjects = [];
+
+    function showAnalysisPopup() {
+        analysisOverlay.classList.add("is-visible");
+        analysisOverlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+    }
+
+    function hideAnalysisPopup() {
+        analysisOverlay.classList.remove("is-visible");
+        analysisOverlay.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+    }
 
     curriculumInput.addEventListener("change", function () {
         const file = this.files && this.files[0];
@@ -84,16 +108,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const file = curriculumInput.files && curriculumInput.files[0];
         if (!file) return;
         analyzeButton.disabled = true;
-        status.textContent = "Reading your curriculum…";
+        status.textContent = "";
+        showAnalysisPopup();
         try {
             suggestedSubjects = await analyzeCurriculum(file);
             if (!suggestedSubjects.length) throw new Error("No subjects were found in this curriculum.");
             renderReview();
             document.getElementById("curriculumCard").classList.add("hidden");
             review.classList.remove("hidden");
+            hideAnalysisPopup();
             review.scrollIntoView({ behavior: "smooth", block: "start" });
-            status.textContent = "";
         } catch (error) {
+            hideAnalysisPopup();
             status.textContent = error.message || "Could not organize the curriculum.";
         } finally {
             analyzeButton.disabled = false;
