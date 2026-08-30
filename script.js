@@ -1,990 +1,450 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    setupTheme();
 
-    /* =========================
-       THEME SYSTEM
-    ========================== */
-
-    const themeToggle =
-        document.getElementById("themeToggle");
-
-    const themeIcon =
-        document.getElementById("themeIcon");
-
-
-    if (themeToggle && themeIcon) {
-
-        const savedTheme =
-            localStorage.getItem("studyOS-theme");
-
-
-        if (savedTheme === "light") {
-
-            document.body.classList.add("light");
-
-            themeIcon.textContent = "🌙";
-
-        } else {
-
-            document.body.classList.remove("light");
-
-            themeIcon.textContent = "☀️";
-
-        }
-
-
-        themeToggle.addEventListener(
-            "click",
-            function () {
-
-                document.body.classList.toggle("light");
-
-
-                const isLight =
-                    document.body.classList.contains("light");
-
-
-                if (isLight) {
-
-                    themeIcon.textContent = "🌙";
-
-                    localStorage.setItem(
-                        "studyOS-theme",
-                        "light"
-                    );
-
-                } else {
-
-                    themeIcon.textContent = "☀️";
-
-                    localStorage.setItem(
-                        "studyOS-theme",
-                        "dark"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =========================
-       DASHBOARD
-    ========================== */
-
-    const dashboardFocus =
-        document.getElementById("dashboardFocus");
-
-
-    if (dashboardFocus) {
-
+    if (document.getElementById("dashboardAverage")) {
         loadDashboard();
-
     }
 
-
-    /* =========================
-       SUBJECT PAGE
-    ========================== */
-
-    const subjectName =
-        document.getElementById("subjectName");
-
-
-    if (subjectName) {
-
-        loadSubjectPage();
-
-    }
-
-
-    /* =========================
-       SUBJECTS PAGE
-    ========================== */
-
-    const subjectsGrid =
-        document.getElementById("subjectsGrid");
-
-
-    if (subjectsGrid) {
-
+    if (document.getElementById("subjectsGrid")) {
         loadSubjectsPage();
+        setupSubjectModal();
+    }
 
+    if (document.getElementById("subjectName")) {
+        loadSubjectPage();
     }
 
 });
 
 
+/* =========================================
+   THEME
+========================================= */
+
+function setupTheme() {
+    const toggle = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
+
+    if (!toggle || !icon) return;
+
+    const savedTheme = localStorage.getItem("studyOS-theme");
+
+    if (savedTheme === "light") {
+        document.body.classList.add("light");
+        icon.textContent = "☾";
+    } else {
+        document.body.classList.remove("light");
+        icon.textContent = "☀";
+    }
+
+    toggle.addEventListener("click", function () {
+        const isLight = document.body.classList.toggle("light");
+        localStorage.setItem("studyOS-theme", isLight ? "light" : "dark");
+        icon.textContent = isLight ? "☾" : "☀";
+    });
+}
+
 
 /* =========================================
-   LOAD DASHBOARD
+   DATA HELPERS
+========================================= */
+
+function getSubjects() {
+    if (typeof studyOSData === "undefined") {
+        console.error("StudyOS data could not be loaded.");
+        return {};
+    }
+    return studyOSData.subjects || {};
+}
+
+function saveSubjects(subjects) {
+    studyOSData.subjects = subjects;
+    if (window.studyOSStorage) {
+        window.studyOSStorage.saveSubjects(subjects);
+    }
+}
+
+function calculateSubjectAverage(subject) {
+    if (!subject.topics || subject.topics.length === 0) {
+        return Number(subject.averageScore) || 0;
+    }
+
+    const total = subject.topics.reduce(function (sum, topic) {
+        return sum + Number(topic.score || 0);
+    }, 0);
+
+    return total / subject.topics.length;
+}
+
+function formatScore(score) {
+    const rounded = Math.round(score * 100) / 100;
+    return `${Number.isInteger(rounded) ? rounded : rounded.toFixed(2)}%`;
+}
+
+
+/* =========================================
+   DASHBOARD
 ========================================= */
 
 function loadDashboard() {
-
-    if (
-        typeof studyOSData === "undefined"
-    ) {
-
-        console.error(
-            "StudyOS data could not be loaded."
-        );
-
-        return;
-
-    }
-
-
-    const subjects =
-        studyOSData.subjects;
-
-
-    const subjectEntries =
-        Object.entries(subjects);
-
-
-    if (subjectEntries.length === 0) {
-
-        return;
-
-    }
-
-
-    /* =========================
-       FIND WEAKEST SUBJECT
-    ========================== */
-
-    const weakestSubject =
-        subjectEntries.reduce(
-            function (weakest, current) {
-
-                if (
-                    current[1].averageScore <
-                    weakest[1].averageScore
-                ) {
-
-                    return current;
-
-                }
-
-                return weakest;
-
-            }
-        );
-
-
-    const focusId =
-        weakestSubject[0];
-
-    const focusSubject =
-        weakestSubject[1];
-
-
-    /* =========================
-       FIND WEAKEST TOPIC
-    ========================== */
-
-    let weakestTopic = null;
-
-
-    subjectEntries.forEach(
-        function ([id, subject]) {
-
-            subject.topics.forEach(
-                function (topic) {
-
-                    if (
-                        !weakestTopic ||
-                        topic.score <
-                        weakestTopic.score
-                    ) {
-
-                        weakestTopic = {
-
-                            subjectId: id,
-
-                            subjectName:
-                                subject.name,
-
-                            topicName:
-                                topic.name,
-
-                            score:
-                                topic.score
-
-                        };
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =========================
-       TODAY'S FOCUS
-    ========================== */
-
-    const focusSubjectElement =
-        document.getElementById(
-            "focusSubject"
-        );
-
-
-    const focusTopicElement =
-        document.getElementById(
-            "focusTopic"
-        );
-
-
-    const focusScoreElement =
-        document.getElementById(
-            "focusScore"
-        );
-
-
-    const focusProgressElement =
-        document.getElementById(
-            "focusProgress"
-        );
-
-
-    const focusLinkElement =
-        document.getElementById(
-            "focusLink"
-        );
-
-
-    if (focusSubjectElement) {
-
-        focusSubjectElement.textContent =
-            focusSubject.name;
-
-    }
-
-
-    if (
-        focusTopicElement &&
-        weakestTopic
-    ) {
-
-        focusTopicElement.textContent =
-            weakestTopic.topicName;
-
-    }
-
-
-    if (
-        focusScoreElement &&
-        weakestTopic
-    ) {
-
-        focusScoreElement.textContent =
-            `${weakestTopic.score}%`;
-
-    }
-
-
-    if (
-        focusProgressElement &&
-        weakestTopic
-    ) {
-
-        focusProgressElement.style.width =
-            `${weakestTopic.score}%`;
-
-    }
-
-
-    if (focusLinkElement) {
-
-        focusLinkElement.href =
-            `subject.html?subject=${focusId}`;
-
-    }
-
-
-    /* =========================
-       DASHBOARD EXAMS
-    ========================== */
-
-    loadDashboardExams(
-        subjectEntries
-    );
-
-
-    /* =========================
-       NEEDS ATTENTION
-    ========================== */
-
-    loadDashboardTopics(
-        subjectEntries
-    );
-
-}
-
-
-
-/* =========================================
-   DASHBOARD EXAMS
-========================================= */
-
-function loadDashboardExams(
-    subjectEntries
-) {
-
-    const examsContainer =
-        document.getElementById(
-            "dashboardExams"
-        );
-
-
-    if (!examsContainer) {
-
-        return;
-
-    }
-
-
-    examsContainer.innerHTML = "";
-
-
-    subjectEntries.forEach(
-        function ([id, subject], index) {
-
-            if (index >= 3) {
-
-                return;
-
-            }
-
-
-            const exam =
-                document.createElement("div");
-
-
-            exam.className =
-                "exam";
-
-
-            const examDate =
-                12 + (index * 3);
-
-
-            const daysLeft =
-                14 + (index * 3);
-
-
-            exam.innerHTML = `
-
-                <div class="exam-info">
-
-                    <span class="exam-dot"></span>
-
-                    <div>
-
-                        <strong>
-                            ${subject.name}
-                        </strong>
-
-                        <small>
-                            ${daysLeft} days left
-                        </small>
-
-                    </div>
-
-                </div>
-
-                <strong>
-                    ${examDate} Sep
-                </strong>
-
-            `;
-
-
-            examsContainer.appendChild(exam);
-
-        }
-    );
-
-}
-
-
-
-/* =========================================
-   DASHBOARD TOPICS
-========================================= */
-
-function loadDashboardTopics(
-    subjectEntries
-) {
-
-    const topicsContainer =
-        document.getElementById(
-            "dashboardTopics"
-        );
-
-
-    if (!topicsContainer) {
-
-        return;
-
-    }
-
-
+    const subjects = getSubjects();
+    const entries = Object.entries(subjects);
     const allTopics = [];
+    let totalStudyTime = 0;
+    let totalSubjectScore = 0;
 
+    entries.forEach(function ([id, subject]) {
+        totalStudyTime += Number(subject.studyTime || 0);
+        totalSubjectScore += calculateSubjectAverage(subject);
 
-    subjectEntries.forEach(
-        function ([id, subject]) {
+        (subject.topics || []).forEach(function (topic) {
+            allTopics.push({
+                subjectId: id,
+                subjectName: subject.name,
+                name: topic.name,
+                score: Number(topic.score || 0)
+            });
+        });
+    });
 
-            subject.topics.forEach(
-                function (topic) {
+    const averageScore = entries.length
+        ? totalSubjectScore / entries.length
+        : 0;
 
-                    allTopics.push({
+    const weakTopics = allTopics.filter(function (topic) {
+        return topic.score < 60;
+    });
 
-                        subjectId: id,
+    setText("dashboardAverage", entries.length ? formatScore(averageScore) : "—");
+    setText("dashboardStudyTime", entries.length ? `${round(totalStudyTime, 2)}h` : "—");
+    setText("dashboardWeakTopics", entries.length ? weakTopics.length : "—");
 
-                        subjectName:
-                            subject.name,
+    setTodayDate();
+    loadDashboardFocus(entries, allTopics);
+    loadDashboardSubjects(entries);
+    loadDashboardTopics(allTopics);
+}
 
-                        name:
-                            topic.name,
+function loadDashboardFocus(entries, allTopics) {
+    const focusSubject = document.getElementById("focusSubject");
+    const focusTopic = document.getElementById("focusTopic");
+    const focusScore = document.getElementById("focusScore");
+    const focusProgress = document.getElementById("focusProgress");
+    const focusLink = document.getElementById("focusLink");
 
-                        score:
-                            topic.score
+    if (!focusSubject) return;
 
-                    });
-
-                }
-            );
-
+    if (allTopics.length === 0) {
+        if (entries.length === 0) {
+            focusSubject.textContent = "Add your first subject";
+            focusTopic.textContent = "Your study space is ready for you.";
+            focusScore.textContent = "";
+            focusProgress.style.width = "0%";
+            focusLink.href = "subjectui.html";
+            focusLink.innerHTML = "Add a subject <span>→</span>";
+            return;
         }
-    );
 
+        const weakest = entries.slice().sort(function (a, b) {
+            return calculateSubjectAverage(a[1]) - calculateSubjectAverage(b[1]);
+        })[0];
 
-    /* =========================
-       SORT LOWEST FIRST
-    ========================== */
+        focusSubject.textContent = weakest[1].name;
+        focusTopic.textContent = "Add topics to start tracking this subject.";
+        focusScore.textContent = formatScore(calculateSubjectAverage(weakest[1]));
+        focusProgress.style.width = `${Math.max(0, Math.min(100, calculateSubjectAverage(weakest[1])))}%`;
+        focusLink.href = `subjects.html?subject=${encodeURIComponent(weakest[0])}`;
+        focusLink.innerHTML = "Open subject <span>→</span>";
+        return;
+    }
 
-    allTopics.sort(
-        function (a, b) {
+    const weakestTopic = allTopics.slice().sort(function (a, b) {
+        return a.score - b.score;
+    })[0];
 
-            return a.score - b.score;
+    focusSubject.textContent = weakestTopic.subjectName;
+    focusTopic.textContent = weakestTopic.name;
+    focusScore.textContent = formatScore(weakestTopic.score);
+    focusProgress.style.width = `${Math.max(0, Math.min(100, weakestTopic.score))}%`;
+    focusLink.href = `subjects.html?subject=${encodeURIComponent(weakestTopic.subjectId)}`;
+    focusLink.innerHTML = "Continue studying <span>→</span>";
+}
 
-        }
-    );
+function loadDashboardSubjects(entries) {
+    const container = document.getElementById("dashboardSubjects");
+    if (!container) return;
 
+    container.innerHTML = "";
 
-    /* SHOW FOUR WEAKEST */
+    if (entries.length === 0) {
+        container.innerHTML = '<p class="muted-message">No subjects yet. Add one from the Subjects page.</p>';
+        return;
+    }
 
-    const weakestTopics =
-        allTopics.slice(0, 4);
+    entries.slice(0, 4).forEach(function ([id, subject]) {
+        const average = calculateSubjectAverage(subject);
+        const row = document.createElement("a");
 
+        row.href = `subjects.html?subject=${encodeURIComponent(id)}`;
+        row.className = "dashboard-subject-row";
+        row.innerHTML = `
+            <span class="subject-name">${escapeHTML(subject.name)}</span>
+            <span class="subject-row-score">${formatScore(average)} <span>→</span></span>
+        `;
 
-    topicsContainer.innerHTML = "";
+        container.appendChild(row);
+    });
+}
 
+function loadDashboardTopics(allTopics) {
+    const container = document.getElementById("dashboardTopics");
+    if (!container) return;
 
-    weakestTopics.forEach(
-        function (topic) {
+    container.innerHTML = "";
 
-            const row =
-                document.createElement("div");
+    const weakest = allTopics.slice().sort(function (a, b) {
+        return a.score - b.score;
+    }).slice(0, 5);
 
+    if (weakest.length === 0) {
+        container.innerHTML = '<p class="muted-message">No topic data yet. Add topics inside a subject to see focus areas here.</p>';
+        return;
+    }
 
-            row.className =
-                "topic";
+    weakest.forEach(function (topic) {
+        const row = document.createElement("a");
+        row.className = "attention-row";
+        row.href = `subjects.html?subject=${encodeURIComponent(topic.subjectId)}`;
+        row.innerHTML = `
+            <div>
+                <strong>${escapeHTML(topic.name)}</strong>
+                <span>${escapeHTML(topic.subjectName)}</span>
+            </div>
+            <strong class="attention-score">${formatScore(topic.score)}</strong>
+        `;
+        container.appendChild(row);
+    });
+}
 
+function setTodayDate() {
+    const element = document.getElementById("todayDate");
+    if (!element) return;
 
-            const status =
-                getTopicStatus(
-                    topic.score
-                );
-
-
-            row.innerHTML = `
-
-                <div class="topic-info">
-
-                    <div class="topic-title">
-
-                        <strong>
-                            ${topic.name}
-                        </strong>
-
-                        <span class="subject-tag">
-                            ${topic.subjectName}
-                        </span>
-
-                    </div>
-
-                    <div class="mini-progress">
-
-                        <div
-                            class="mini-progress-fill ${status.fillClass}"
-                            style="width: ${topic.score}%"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <strong class="score ${status.textClass}">
-                    ${topic.score}%
-                </strong>
-
-
-                <a
-                    href="subject.html?subject=${topic.subjectId}"
-                    class="practice-button"
-                >
-                    Practice
-                </a>
-
-            `;
-
-
-            topicsContainer.appendChild(row);
-
-        }
-    );
-
+    element.textContent = new Date().toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
 }
 
 
-
 /* =========================================
-   LOAD SUBJECTS PAGE
+   SUBJECT LIST
 ========================================= */
 
 function loadSubjectsPage() {
+    const grid = document.getElementById("subjectsGrid");
+    const emptyState = document.getElementById("emptySubjects");
 
-    if (
-        typeof studyOSData === "undefined"
-    ) {
+    if (!grid) return;
 
-        console.error(
-            "StudyOS data could not be loaded."
-        );
+    const entries = Object.entries(getSubjects());
+    grid.innerHTML = "";
 
+    if (entries.length === 0) {
+        grid.classList.add("hidden");
+        if (emptyState) emptyState.classList.remove("hidden");
         return;
-
     }
 
+    grid.classList.remove("hidden");
+    if (emptyState) emptyState.classList.add("hidden");
 
-    const subjectsGrid =
-        document.getElementById("subjectsGrid");
+    entries.forEach(function ([id, subject]) {
+        const average = calculateSubjectAverage(subject);
+        const card = document.createElement("article");
+        card.className = "subject-card";
 
+        card.innerHTML = `
+            <div class="subject-card-header">
+                <div class="subject-icon">${escapeHTML(subject.icon || "•")}</div>
+                <span>${subject.topics ? subject.topics.length : 0} topics</span>
+            </div>
+            <h2>${escapeHTML(subject.name)}</h2>
+            <p>${escapeHTML(subject.description || "No description yet.")}</p>
+            <div class="subject-score-line">
+                <span>Average score</span>
+                <strong>${formatScore(average)}</strong>
+            </div>
+            <div class="progress-track">
+                <div class="progress-value" style="width:${Math.max(0, Math.min(100, average))}%"></div>
+            </div>
+            <a class="card-link" href="subjects.html?subject=${encodeURIComponent(id)}">Open subject <span>→</span></a>
+        `;
 
-    const subjects =
-        studyOSData.subjects;
-
-
-    subjectsGrid.innerHTML = "";
-
-
-    Object.entries(subjects).forEach(
-        function ([id, subject]) {
-
-
-            const card =
-                document.createElement("div");
-
-
-            card.className =
-                "subject-card";
-
-
-            const status =
-                getSubjectStatus(
-                    subject.averageScore
-                );
-
-
-            card.innerHTML = `
-
-                <div class="subject-card-top">
-
-                    <div class="subject-icon">
-                        ${subject.icon}
-                    </div>
-
-                    <span class="subject-status ${status.className}">
-                        ${status.text}
-                    </span>
-
-                </div>
-
-
-                <h2>
-                    ${subject.name}
-                </h2>
-
-
-                <p class="subject-description">
-                    ${subject.description}
-                </p>
-
-
-                <div class="subject-performance">
-
-                    <div class="performance-header">
-
-                        <span>
-                            Average Score
-                        </span>
-
-                        <strong>
-                            ${subject.averageScore}%
-                        </strong>
-
-                    </div>
-
-
-                    <div class="subject-progress">
-
-                        <div
-                            class="subject-progress-fill"
-                            style="width: ${subject.averageScore}%"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="subject-footer">
-
-                    <span>
-                        ${subject.topics.length} Topics
-                    </span>
-
-
-                    <a
-                        href="subject.html?subject=${id}"
-                        class="open-subject"
-                    >
-                        Open Subject →
-                    </a>
-
-                </div>
-
-            `;
-
-
-            subjectsGrid.appendChild(card);
-
-        }
-    );
-
+        grid.appendChild(card);
+    });
 }
 
 
+/* =========================================
+   ADD SUBJECT
+========================================= */
+
+function setupSubjectModal() {
+    const modal = document.getElementById("subjectModal");
+    const openButton = document.getElementById("addSubjectButton");
+    const emptyOpenButton = document.getElementById("emptyAddSubjectButton");
+    const closeButton = document.getElementById("closeSubjectModal");
+    const cancelButton = document.getElementById("cancelSubjectButton");
+    const form = document.getElementById("subjectForm");
+
+    if (!modal || !form) return;
+
+    function openModal() {
+        modal.classList.remove("hidden");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        document.getElementById("subjectNameInput").focus();
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+        form.reset();
+    }
+
+    if (openButton) openButton.addEventListener("click", openModal);
+    if (emptyOpenButton) emptyOpenButton.addEventListener("click", openModal);
+    if (closeButton) closeButton.addEventListener("click", closeModal);
+    if (cancelButton) cancelButton.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (event) {
+        if (event.target.hasAttribute("data-close-modal")) closeModal();
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+    });
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("subjectNameInput").value.trim();
+        const description = document.getElementById("subjectDescriptionInput").value.trim();
+        if (!name) return;
+
+        const subjects = getSubjects();
+        const id = createUniqueSubjectId(name, subjects);
+
+        subjects[id] = {
+            name: name,
+            icon: "•",
+            description: description || "A new StudyOS subject.",
+            averageScore: 0,
+            studyTime: 0,
+            topics: []
+        };
+
+        saveSubjects(subjects);
+        closeModal();
+        loadSubjectsPage();
+    });
+}
+
+function createUniqueSubjectId(name, subjects) {
+    const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "subject";
+    let id = base;
+    let number = 2;
+
+    while (subjects[id]) {
+        id = `${base}-${number}`;
+        number += 1;
+    }
+
+    return id;
+}
+
 
 /* =========================================
-   LOAD INDIVIDUAL SUBJECT
+   INDIVIDUAL SUBJECT PAGE
 ========================================= */
 
 function loadSubjectPage() {
-
-    if (
-        typeof studyOSData === "undefined"
-    ) {
-
-        console.error(
-            "StudyOS data could not be loaded."
-        );
-
-        return;
-
-    }
-
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-
-    const subjectId =
-        params.get("subject");
-
-
-    const subject =
-        studyOSData.subjects[subjectId];
-
-
-    /* =========================
-       INVALID SUBJECT
-    ========================== */
+    const params = new URLSearchParams(window.location.search);
+    const subjectId = params.get("subject");
+    const subject = getSubjects()[subjectId];
 
     if (!subject) {
-
-        document.getElementById(
-            "subjectName"
-        ).textContent =
-            "Subject Not Found";
-
-
-        document.getElementById(
-            "subjectDescription"
-        ).textContent =
-            "We couldn't find the subject you're looking for.";
-
-
+        setText("subjectName", "Subject not found");
+        setText("subjectDescription", "This subject does not exist in your StudyOS data.");
+        setText("subjectAverage", "—");
+        setText("subjectTopics", "—");
+        setText("subjectStudyTime", "—");
         return;
-
     }
 
+    document.title = `${subject.name} | StudyOS`;
+    setText("subjectName", subject.name);
+    setText("subjectDescription", subject.description || "");
+    setText("subjectIcon", subject.icon || "•");
+    setText("subjectAverage", formatScore(calculateSubjectAverage(subject)));
+    setText("subjectTopics", subject.topics ? subject.topics.length : 0);
+    setText("subjectStudyTime", `${round(Number(subject.studyTime || 0), 2)}h`);
 
-    /* =========================
-       BASIC INFORMATION
-    ========================== */
+    const list = document.getElementById("subjectTopicsList");
+    if (!list) return;
 
-    document.title =
-        `${subject.name} | StudyOS`;
+    list.innerHTML = "";
 
+    if (!subject.topics || subject.topics.length === 0) {
+        list.innerHTML = `
+            <div class="empty-topic-state">
+                <h3>No topics yet.</h3>
+                <p>This subject is ready. Topic management is our next step.</p>
+            </div>
+        `;
+        return;
+    }
 
-    document.getElementById(
-        "subjectName"
-    ).textContent =
-        subject.name;
-
-
-    document.getElementById(
-        "subjectDescription"
-    ).textContent =
-        subject.description;
-
-
-    document.getElementById(
-        "subjectIcon"
-    ).textContent =
-        subject.icon;
-
-
-    /* =========================
-       STATS
-    ========================== */
-
-    document.getElementById(
-        "subjectAverage"
-    ).textContent =
-        `${subject.averageScore}%`;
-
-
-    document.getElementById(
-        "subjectTopics"
-    ).textContent =
-        subject.topics.length;
-
-
-    document.getElementById(
-        "subjectStudyTime"
-    ).textContent =
-        `${subject.studyTime}h`;
-
-
-    /* =========================
-       TOPICS
-    ========================== */
-
-    const topicsList =
-        document.getElementById(
-            "subjectTopicsList"
-        );
-
-
-    topicsList.innerHTML = "";
-
-
-    subject.topics.forEach(
-        function (topic) {
-
-            const row =
-                document.createElement("div");
-
-
-            row.className =
-                "subject-topic-row";
-
-
-            const status =
-                getTopicStatus(
-                    topic.score
-                );
-
-
-            row.innerHTML = `
-
-                <div class="subject-topic-main">
-
-                    <div class="subject-topic-title">
-
-                        <strong>
-                            ${topic.name}
-                        </strong>
-
-                        <span class="topic-status ${status.className}">
-                            ${status.text}
-                        </span>
-
-                    </div>
-
-
-                    <div class="subject-topic-progress">
-
-                        <div
-                            class="subject-topic-fill ${status.fillClass}"
-                            style="width: ${topic.score}%"
-                        ></div>
-
-                    </div>
-
+    subject.topics.forEach(function (topic) {
+        const row = document.createElement("div");
+        row.className = "subject-topic-row";
+        row.innerHTML = `
+            <div>
+                <strong>${escapeHTML(topic.name)}</strong>
+                <div class="progress-track topic-progress">
+                    <div class="progress-value" style="width:${Math.max(0, Math.min(100, Number(topic.score || 0)))}%"></div>
                 </div>
-
-
-                <strong class="topic-score ${status.textClass}">
-                    ${topic.score}%
-                </strong>
-
-
-                <a
-                    href="#"
-                    class="topic-open"
-                    data-topic="${topic.name}"
-                >
-                    Practice →
-                </a>
-
-            `;
-
-
-            topicsList.appendChild(row);
-
-        }
-    );
-
+            </div>
+            <strong>${formatScore(Number(topic.score || 0))}</strong>
+        `;
+        list.appendChild(row);
+    });
 }
 
 
-
 /* =========================================
-   SUBJECT STATUS
+   UTILITIES
 ========================================= */
 
-function getSubjectStatus(score) {
-
-    if (score >= 80) {
-
-        return {
-
-            text: "Strong",
-
-            className: "excellent"
-
-        };
-
-    }
-
-
-    if (score >= 65) {
-
-        return {
-
-            text: "On Track",
-
-            className: "good"
-
-        };
-
-    }
-
-
-    return {
-
-        text: "Needs Work",
-
-        className: "needs-work"
-
-    };
-
+function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
 }
 
+function round(value, decimals) {
+    const factor = Math.pow(10, decimals);
+    return Math.round(value * factor) / factor;
+}
 
-
-/* =========================================
-   TOPIC STATUS
-========================================= */
-
-function getTopicStatus(score) {
-
-    if (score >= 80) {
-
-        return {
-
-            text: "Strong",
-
-            className: "excellent-topic",
-
-            fillClass: "excellent-fill",
-
-            textClass: "excellent-text"
-
-        };
-
-    }
-
-
-    if (score >= 70) {
-
-        return {
-
-            text: "Good",
-
-            className: "strong",
-
-            fillClass: "strong-fill",
-
-            textClass: "strong-text"
-
-        };
-
-    }
-
-
-    if (score >= 60) {
-
-        return {
-
-            text: "Needs Practice",
-
-            className: "weak",
-
-            fillClass: "weak-fill",
-
-            textClass: "weak-text"
-
-        };
-
-    }
-
-
-    return {
-
-        text: "Needs Attention",
-
-        className: "danger-topic",
-
-        fillClass: "danger-fill",
-
-        textClass: "danger-text"
-
-    };
-
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
