@@ -71,6 +71,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================
+       DASHBOARD
+    ========================== */
+
+    const dashboardFocus =
+        document.getElementById("dashboardFocus");
+
+
+    if (dashboardFocus) {
+
+        loadDashboard();
+
+    }
+
+
+    /* =========================
        SUBJECT PAGE
     ========================== */
 
@@ -100,6 +115,446 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+
+
+/* =========================================
+   LOAD DASHBOARD
+========================================= */
+
+function loadDashboard() {
+
+    if (
+        typeof studyOSData === "undefined"
+    ) {
+
+        console.error(
+            "StudyOS data could not be loaded."
+        );
+
+        return;
+
+    }
+
+
+    const subjects =
+        studyOSData.subjects;
+
+
+    const subjectEntries =
+        Object.entries(subjects);
+
+
+    if (subjectEntries.length === 0) {
+
+        return;
+
+    }
+
+
+    /* =========================
+       FIND WEAKEST SUBJECT
+    ========================== */
+
+    const weakestSubject =
+        subjectEntries.reduce(
+            function (weakest, current) {
+
+                if (
+                    current[1].averageScore <
+                    weakest[1].averageScore
+                ) {
+
+                    return current;
+
+                }
+
+                return weakest;
+
+            }
+        );
+
+
+    const focusId =
+        weakestSubject[0];
+
+    const focusSubject =
+        weakestSubject[1];
+
+
+    /* =========================
+       FIND WEAKEST TOPIC
+    ========================== */
+
+    let weakestTopic = null;
+
+
+    subjectEntries.forEach(
+        function ([id, subject]) {
+
+            subject.topics.forEach(
+                function (topic) {
+
+                    if (
+                        !weakestTopic ||
+                        topic.score <
+                        weakestTopic.score
+                    ) {
+
+                        weakestTopic = {
+
+                            subjectId: id,
+
+                            subjectName:
+                                subject.name,
+
+                            topicName:
+                                topic.name,
+
+                            score:
+                                topic.score
+
+                        };
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       TODAY'S FOCUS
+    ========================== */
+
+    const focusSubjectElement =
+        document.getElementById(
+            "focusSubject"
+        );
+
+
+    const focusTopicElement =
+        document.getElementById(
+            "focusTopic"
+        );
+
+
+    const focusScoreElement =
+        document.getElementById(
+            "focusScore"
+        );
+
+
+    const focusProgressElement =
+        document.getElementById(
+            "focusProgress"
+        );
+
+
+    const focusLinkElement =
+        document.getElementById(
+            "focusLink"
+        );
+
+
+    if (focusSubjectElement) {
+
+        focusSubjectElement.textContent =
+            focusSubject.name;
+
+    }
+
+
+    if (
+        focusTopicElement &&
+        weakestTopic
+    ) {
+
+        focusTopicElement.textContent =
+            weakestTopic.topicName;
+
+    }
+
+
+    if (
+        focusScoreElement &&
+        weakestTopic
+    ) {
+
+        focusScoreElement.textContent =
+            `${weakestTopic.score}%`;
+
+    }
+
+
+    if (
+        focusProgressElement &&
+        weakestTopic
+    ) {
+
+        focusProgressElement.style.width =
+            `${weakestTopic.score}%`;
+
+    }
+
+
+    if (focusLinkElement) {
+
+        focusLinkElement.href =
+            `subject.html?subject=${focusId}`;
+
+    }
+
+
+    /* =========================
+       DASHBOARD EXAMS
+    ========================== */
+
+    loadDashboardExams(
+        subjectEntries
+    );
+
+
+    /* =========================
+       NEEDS ATTENTION
+    ========================== */
+
+    loadDashboardTopics(
+        subjectEntries
+    );
+
+}
+
+
+
+/* =========================================
+   DASHBOARD EXAMS
+========================================= */
+
+function loadDashboardExams(
+    subjectEntries
+) {
+
+    const examsContainer =
+        document.getElementById(
+            "dashboardExams"
+        );
+
+
+    if (!examsContainer) {
+
+        return;
+
+    }
+
+
+    examsContainer.innerHTML = "";
+
+
+    subjectEntries.forEach(
+        function ([id, subject], index) {
+
+            if (index >= 3) {
+
+                return;
+
+            }
+
+
+            const exam =
+                document.createElement("div");
+
+
+            exam.className =
+                "exam";
+
+
+            const examDate =
+                12 + (index * 3);
+
+
+            const daysLeft =
+                14 + (index * 3);
+
+
+            exam.innerHTML = `
+
+                <div class="exam-info">
+
+                    <span class="exam-dot"></span>
+
+                    <div>
+
+                        <strong>
+                            ${subject.name}
+                        </strong>
+
+                        <small>
+                            ${daysLeft} days left
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <strong>
+                    ${examDate} Sep
+                </strong>
+
+            `;
+
+
+            examsContainer.appendChild(exam);
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   DASHBOARD TOPICS
+========================================= */
+
+function loadDashboardTopics(
+    subjectEntries
+) {
+
+    const topicsContainer =
+        document.getElementById(
+            "dashboardTopics"
+        );
+
+
+    if (!topicsContainer) {
+
+        return;
+
+    }
+
+
+    const allTopics = [];
+
+
+    subjectEntries.forEach(
+        function ([id, subject]) {
+
+            subject.topics.forEach(
+                function (topic) {
+
+                    allTopics.push({
+
+                        subjectId: id,
+
+                        subjectName:
+                            subject.name,
+
+                        name:
+                            topic.name,
+
+                        score:
+                            topic.score
+
+                    });
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       SORT LOWEST FIRST
+    ========================== */
+
+    allTopics.sort(
+        function (a, b) {
+
+            return a.score - b.score;
+
+        }
+    );
+
+
+    /* SHOW FOUR WEAKEST */
+
+    const weakestTopics =
+        allTopics.slice(0, 4);
+
+
+    topicsContainer.innerHTML = "";
+
+
+    weakestTopics.forEach(
+        function (topic) {
+
+            const row =
+                document.createElement("div");
+
+
+            row.className =
+                "topic";
+
+
+            const status =
+                getTopicStatus(
+                    topic.score
+                );
+
+
+            row.innerHTML = `
+
+                <div class="topic-info">
+
+                    <div class="topic-title">
+
+                        <strong>
+                            ${topic.name}
+                        </strong>
+
+                        <span class="subject-tag">
+                            ${topic.subjectName}
+                        </span>
+
+                    </div>
+
+                    <div class="mini-progress">
+
+                        <div
+                            class="mini-progress-fill ${status.fillClass}"
+                            style="width: ${topic.score}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <strong class="score ${status.textClass}">
+                    ${topic.score}%
+                </strong>
+
+
+                <a
+                    href="subject.html?subject=${topic.subjectId}"
+                    class="practice-button"
+                >
+                    Practice
+                </a>
+
+            `;
+
+
+            topicsContainer.appendChild(row);
+
+        }
+    );
+
+}
 
 
 
@@ -272,7 +727,8 @@ function loadSubjectPage() {
 
         document.getElementById(
             "subjectName"
-        ).textContent = "Subject Not Found";
+        ).textContent =
+            "Subject Not Found";
 
 
         document.getElementById(
