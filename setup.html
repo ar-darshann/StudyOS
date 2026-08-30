@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set up StudyOS</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="app-enhancements.css">
+</head>
+<body class="setup-page">
+<div class="ambient-background" aria-hidden="true"><span></span><span></span><span></span></div>
+<nav class="navbar">
+<a href="dashboard.html" class="logo">Study<span>OS</span></a>
+<div class="nav-actions"><button class="theme-toggle" id="themeToggle"><span id="themeIcon">☀</span></button><button class="profile-button" id="profileButton">—</button></div>
+</nav>
+<main class="container setup-container">
+<header class="setup-hero"><p class="eyebrow">FIRST SETUP</p><h1>Build your study space.</h1><p class="welcome-text">Add your subjects, topics and study material now. You can change everything later.</p></header>
+<section class="setup-layout">
+<article class="setup-card">
+<div class="panel-heading"><div><p class="section-kicker">SUBJECTS</p><h2>Add a subject</h2></div></div>
+<form id="setupSubjectForm" class="setup-form">
+<label>Subject name<input id="setupSubjectName" maxlength="60" placeholder="e.g. Financial Accounting" required></label>
+<label>Description <span class="optional">optional</span><textarea id="setupSubjectDescription" maxlength="140" placeholder="What are you studying?"></textarea></label>
+<button class="primary-button" type="submit">Add subject</button>
+</form>
+<div id="setupSubjects" class="setup-subject-list"></div>
+</article>
+<article class="setup-card">
+<div class="panel-heading"><div><p class="section-kicker">MATERIAL</p><h2>Add study material</h2></div></div>
+<p class="section-description">Select a subject, then upload PDFs, documents, audio, video, images or other files.</p>
+<label class="setup-select-label">Subject<select id="materialSubjectSelect"><option value="">Create a subject first</option></select></label>
+<label class="upload-dropzone"><input id="setupMaterialInput" type="file" multiple><strong>Choose files</strong><span>or drag files here</span></label>
+<div id="setupMaterials" class="setup-material-list"></div>
+</article>
+</section>
+<section class="setup-topics-card">
+<div class="panel-heading"><div><p class="section-kicker">TOPICS</p><h2>Add topics to a subject</h2></div></div>
+<div class="topic-builder"><select id="topicSubjectSelect"><option value="">Select a subject</option></select><input id="setupTopicName" maxlength="80" placeholder="e.g. Depreciation"><button class="primary-button" id="setupAddTopic" type="button">Add topic</button></div>
+<div id="setupTopicList" class="setup-topic-list"></div>
+</section>
+<div class="setup-footer"><button class="secondary-button" id="skipSetup" type="button">I'll do this later</button><button class="primary-button" id="finishSetup" type="button">Finish setup →</button></div>
+</main>
+<script src="data/storage.js"></script>
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    if(!localStorage.getItem('studyOS-account')){location.replace('index.html');return;}
+    setupTheme(); updateProfileButton();
+    const subjectForm=document.getElementById('setupSubjectForm');
+    const subjectsEl=document.getElementById('setupSubjects');
+    const subjectSelect=document.getElementById('materialSubjectSelect');
+    const topicSelect=document.getElementById('topicSubjectSelect');
+    const topicList=document.getElementById('setupTopicList');
+    const materialList=document.getElementById('setupMaterials');
+    function subjects(){return studyOSStorage.getSubjects();}
+    function save(s){studyOSStorage.saveSubjects(s);render();}
+    function render(){
+        const s=subjects(); const entries=Object.entries(s);
+        subjectsEl.innerHTML=entries.length?entries.map(([id,x])=>`<div class="setup-item"><div><strong>${escapeHTML(x.name)}</strong><span>${(x.topics||[]).length} topics</span></div><button data-remove-subject="${id}" type="button">Remove</button></div>`).join(''):'<p class="muted-message">No subjects added yet.</p>';
+        const options=entries.map(([id,x])=>`<option value="${id}">${escapeHTML(x.name)}</option>`).join('');
+        subjectSelect.innerHTML=entries.length?'<option value="">Select a subject</option>'+options:'<option value="">Create a subject first</option>';
+        topicSelect.innerHTML=entries.length?'<option value="">Select a subject</option>'+options:'<option value="">Create a subject first</option>';
+        const selected=topicSelect.value||entries[0]?.[0];
+        if(selected && s[selected]) topicList.innerHTML=(s[selected].topics||[]).length?(s[selected].topics||[]).map((t,i)=>`<div class="setup-item"><span>${escapeHTML(t.name)}</span><span>${Number(t.score||0)}%</span></div>`).join(''):'<p class="muted-message">No topics yet.</p>';
+        else topicList.innerHTML='<p class="muted-message">Select a subject to see its topics.</p>';
+    }
+    subjectsEl.addEventListener('click',e=>{const id=e.target.dataset.removeSubject;if(!id)return;const s=subjects();delete s[id];save(s);});
+    subjectForm.addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('setupSubjectName').value.trim();if(!name)return;const s=subjects();let base=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'subject',id=base,n=2;while(s[id])id=base+'-'+n++;s[id]={name,description:document.getElementById('setupSubjectDescription').value.trim(),icon:'•',averageScore:0,studyTime:0,topics:[]};save(s);subjectForm.reset();subjectSelect.value=id;topicSelect.value=id;render();});
+    topicSelect.addEventListener('change',render);
+    document.getElementById('setupAddTopic').onclick=function(){const id=topicSelect.value,name=document.getElementById('setupTopicName').value.trim(),s=subjects();if(!id||!name||!s[id])return;s[id].topics.push({name,score:0});save(s);document.getElementById('setupTopicName').value='';topicSelect.value=id;render();};
+    document.getElementById('setupMaterialInput').addEventListener('change',async function(){const id=subjectSelect.value;if(!id){alert('Select a subject first.');return;}for(const file of Array.from(this.files||[])){await studyOSStorage.addMaterial({id:crypto.randomUUID(),subjectId:id,name:file.name,type:file.type||'application/octet-stream',size:file.size,addedAt:new Date().toISOString(),blob:file});}this.value='';await renderMaterials(id);});
+    async function renderMaterials(id){if(!id){materialList.innerHTML='<p class="muted-message">Select a subject to see its material.</p>';return;}const mats=await studyOSStorage.getMaterials(id);materialList.innerHTML=mats.length?mats.map(m=>`<div class="setup-item"><div><strong>${escapeHTML(m.name)}</strong><span>${escapeHTML(m.type||'File')}</span></div><button data-material-delete="${m.id}" type="button">Delete</button></div>`).join(''):'<p class="muted-message">No material added yet.</p>';}
+    subjectSelect.addEventListener('change',()=>renderMaterials(subjectSelect.value));
+    materialList.addEventListener('click',async e=>{const id=e.target.dataset.materialDelete;if(id){await studyOSStorage.deleteMaterial(id);renderMaterials(subjectSelect.value);}});
+    document.getElementById('finishSetup').onclick=()=>location.href='dashboard.html';
+    document.getElementById('skipSetup').onclick=()=>location.href='dashboard.html';
+    render();
+    setupPageTransitions();
+});
+</script>
+</body>
+</html>
