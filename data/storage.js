@@ -127,3 +127,11 @@
         }
     };
 })();
+
+/* After AI curriculum organization, keep first-setup focused on review.
+   Manual subject/material/topic tools remain available from the main app. */
+document.addEventListener("DOMContentLoaded", function () {
+    const style = document.createElement("style");
+    style.textContent = `#curriculumReview:not(.hidden) ~ .manual-card,#curriculumReview:not(.hidden) ~ .setup-card:not(.manual-card),#curriculumReview:not(.hidden) ~ .setup-topics-card{display:none!important}`;
+    document.head.appendChild(style);
+});
