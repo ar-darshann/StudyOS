@@ -1,351 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyOS</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
-    <!-- =========================
-         NAVIGATION
-    ========================== -->
-
     <nav class="navbar">
-
-        <div class="logo">
-            Study<span>OS</span>
-        </div>
-
+        <a href="index.html" class="logo">Study<span>OS</span></a>
         <div class="nav-links">
-
-            <a
-                href="index.html"
-                class="active"
-            >
-                Dashboard
-            </a>
-
-            <a href="subjectui.html">
-                Subjects
-            </a>
-
-            <a href="#">
-                Progress
-            </a>
-
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="subjectui.html">Subjects</a>
+            <a href="#" class="disabled-link">Progress</a>
         </div>
-
         <div class="nav-actions">
-
-            <button
-                class="theme-toggle"
-                id="themeToggle"
-                aria-label="Toggle light and dark mode"
-            >
-                <span id="themeIcon">☀️</span>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span id="themeIcon">☀</span>
             </button>
-
-            <button class="profile-button">
-                SD
-            </button>
-
+            <button class="profile-button" aria-label="Profile">SD</button>
         </div>
-
     </nav>
 
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
     <main class="container">
-
-        <!-- WELCOME -->
-
-        <section class="welcome">
-
+        <header class="dashboard-header">
             <div>
-
-                <p class="eyebrow">
-                    YOUR STUDY COMMAND CENTER
-                </p>
-
-                <h1>
-                    Good morning 👋
-                </h1>
-
-                <p class="welcome-text">
-                    Here's what needs your attention today.
-                </p>
-
+                <p class="eyebrow">DASHBOARD</p>
+                <h1>Good morning.</h1>
+                <p class="welcome-text">Here is where your studies stand today.</p>
             </div>
+            <div class="today-date" id="todayDate"></div>
+        </header>
 
-            <div class="date-card">
-
-                <span>
-                    Today
-                </span>
-
-                <strong>
-                    29 August
-                </strong>
-
+        <section class="stats-grid" aria-label="Study statistics">
+            <div class="stat-card">
+                <span class="stat-label">Average score</span>
+                <strong id="dashboardAverage">—</strong>
             </div>
-
+            <div class="stat-card">
+                <span class="stat-label">Study time</span>
+                <strong id="dashboardStudyTime">—</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Topics needing attention</span>
+                <strong id="dashboardWeakTopics">—</strong>
+            </div>
         </section>
 
-
-        <!-- QUICK STATS -->
-
-        <section class="stats-grid">
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    📊
-                </div>
-
-                <div>
-
-                    <p>
-                        Average Score
-                    </p>
-
-                    <h2>
-                        77.22%
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    ⏱️
-                </div>
-
-                <div>
-
-                    <p>
-                        Study Time
-                    </p>
-
-                    <h2>
-                        2.39h
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    ⚠️
-                </div>
-
-                <div>
-
-                    <p>
-                        Weak Topics
-                    </p>
-
-                    <h2>
-                        9
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- MAIN GRID -->
-
-        <section class="main-grid">
-
-
-            <!-- TODAY'S FOCUS -->
-
-            <div
-                class="focus-card"
-                id="dashboardFocus"
-            >
-
-                <div class="card-top">
-
-                    <span class="card-label">
-                        🎯 TODAY'S FOCUS
-                    </span>
-
-                    <span class="focus-badge">
-                        Needs Practice
-                    </span>
-
-                </div>
-
-                <h2 id="focusSubject">
-                    Loading...
-                </h2>
-
-                <p
-                    class="focus-topic"
-                    id="focusTopic"
-                >
-                    Loading...
-                </p>
-
-                <div class="focus-score">
-
+        <section class="dashboard-grid">
+            <article class="focus-panel">
+                <div class="panel-heading">
                     <div>
-
-                        <span>
-                            Current score
-                        </span>
-
-                        <strong id="focusScore">
-                            --
-                        </strong>
-
+                        <p class="section-kicker">NEXT UP</p>
+                        <h2 id="focusSubject">—</h2>
                     </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-fill"
-                            id="focusProgress"
-                            style="width: 0%;"
-                        ></div>
-
-                    </div>
-
+                    <span class="score-chip" id="focusScore">—</span>
                 </div>
+                <p class="focus-topic" id="focusTopic">—</p>
+                <div class="progress-track">
+                    <div class="progress-value" id="focusProgress"></div>
+                </div>
+                <a href="#" id="focusLink" class="text-button">Continue studying <span>→</span></a>
+            </article>
 
-                <a
-                    href="#"
-                    id="focusLink"
-                    class="primary-button"
-                >
-                    Start Studying →
-                </a>
-
-            </div>
-
-
-            <!-- UPCOMING EXAMS -->
-
-            <div class="exams-card">
-
-                <div class="card-header">
-
+            <article class="subjects-panel">
+                <div class="panel-heading">
                     <div>
-
-                        <span class="card-label">
-                            📅 UPCOMING
-                        </span>
-
-                        <h2>
-                            Exams
-                        </h2>
-
+                        <p class="section-kicker">YOUR SUBJECTS</p>
+                        <h2>Keep moving.</h2>
                     </div>
-
-                    <button class="icon-button">
-                        →
-                    </button>
-
+                    <a href="subjectui.html" class="text-button">View all <span>→</span></a>
                 </div>
-
-
-                <div id="dashboardExams">
-
-                    <!-- JavaScript will populate this -->
-
-                </div>
-
-            </div>
-
+                <div id="dashboardSubjects" class="dashboard-subject-list"></div>
+            </article>
         </section>
 
-
-        <!-- NEEDS ATTENTION -->
-
-        <section class="topics-card">
-
-            <div class="section-header">
-
+        <section class="simple-section">
+            <div class="section-heading-row">
                 <div>
-
-                    <span class="card-label">
-                        ⚠️ NEEDS ATTENTION
-                    </span>
-
-                    <h2>
-                        Topics to improve
-                    </h2>
-
-                    <p>
-                        Focus on these topics to improve your overall score.
-                    </p>
-
+                    <p class="section-kicker">FOCUS AREAS</p>
+                    <h2>Topics that need work</h2>
                 </div>
-
-                <button class="secondary-button">
-                    View All →
-                </button>
-
             </div>
-
-
-            <div
-                class="topics-list"
-                id="dashboardTopics"
-            >
-
-                <!-- JavaScript will populate this -->
-
-            </div>
-
+            <div id="dashboardTopics" class="attention-list"></div>
         </section>
-
     </main>
 
-
-    <!-- FOOTER -->
-
     <footer>
-
-        <p>
-            StudyOS • Built for better studying.
-        </p>
-
+        <p>StudyOS</p>
     </footer>
 
-
-    <!-- DATA -->
-
     <script src="data/sample-data.js"></script>
-
-    <!-- APPLICATION -->
-
+    <script src="data/storage.js"></script>
     <script src="script.js"></script>
-
 </body>
-
 </html>
