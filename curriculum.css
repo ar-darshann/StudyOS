@@ -1,0 +1,26 @@
+.curriculum-card { position: relative; overflow: hidden; }
+.curriculum-card::after { content: ""; position: absolute; width: 220px; height: 220px; right: -90px; top: -110px; border-radius: 50%; background: radial-gradient(circle, rgba(32,199,106,.09), transparent 68%); pointer-events: none; }
+.curriculum-dropzone { min-height: 150px; margin-top: 24px; cursor: pointer; border: 1px dashed var(--border-strong); background: var(--background); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+.curriculum-dropzone:hover { border-color: var(--accent); background: var(--surface-2); transform: translateY(-1px); }
+.curriculum-dropzone input { display: none; }
+.curriculum-dropzone strong { font-size: 14px; }
+.curriculum-dropzone span { color: var(--muted); font-size: 12px; }
+.curriculum-dropzone small { margin-top: 5px; color: var(--accent); max-width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.setup-status { min-height: 20px; color: var(--muted); font-size: 12px; margin-top: 12px; }
+.curriculum-review-list { display: grid; gap: 14px; margin-top: 24px; }
+.curriculum-review-item { border-top: 1px solid var(--border); padding: 18px 0 2px; }
+.curriculum-review-head { display: flex; gap: 10px; align-items: center; }
+.curriculum-review-head input, .curriculum-subject-description, .curriculum-topic-edit input { width: 100%; border: 1px solid var(--border); background: var(--background); color: var(--text); border-radius: 6px; padding: 10px 11px; outline: none; }
+.curriculum-review-head input { font-size: 17px; font-weight: 750; }
+.curriculum-review-head input:focus, .curriculum-subject-description:focus, .curriculum-topic-edit input:focus { border-color: var(--accent); }
+.curriculum-subject-description { margin-top: 8px; font-size: 12px; }
+.review-remove, .review-actions button, .add-review-topic, .curriculum-topic-edit button { font: inherit; }
+.review-remove { flex: 0 0 auto; border: 0; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; }
+.review-remove:hover { color: var(--danger); }
+.curriculum-topic-list { display: grid; gap: 7px; margin-top: 12px; }
+.curriculum-topic-edit { display: flex; gap: 7px; }
+.curriculum-topic-edit button { width: 36px; border: 1px solid var(--border); background: transparent; color: var(--muted); border-radius: 6px; cursor: pointer; }
+.curriculum-topic-edit button:hover { color: var(--danger); border-color: var(--danger); }
+.add-review-topic { margin-top: 9px; border: 0; background: transparent; color: var(--accent); padding: 4px 0; font-size: 12px; font-weight: 700; cursor: pointer; }
+.review-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
+@media (max-width: 650px) { .curriculum-review-head { align-items: stretch; flex-direction: column; } .review-actions { flex-direction: column-reverse; } .review-actions button { width: 100%; } }
