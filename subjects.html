@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Subjects | StudyOS</title>
+    <title>Subject | StudyOS</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -68,29 +68,147 @@
 
     <main class="container">
 
-        <section class="page-header">
+        <a
+            href="subjects.html"
+            class="back-link"
+        >
+            ← Back to Subjects
+        </a>
 
-            <p class="eyebrow">
-                YOUR LEARNING SPACE
-            </p>
 
-            <h1>
-                Your Subjects
-            </h1>
+        <!-- SUBJECT HEADER -->
 
-            <p class="welcome-text">
-                Track your performance and focus on what matters.
-            </p>
+        <section class="subject-page-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    SUBJECT
+                </p>
+
+                <h1 id="subjectName">
+                    Loading...
+                </h1>
+
+                <p
+                    class="welcome-text"
+                    id="subjectDescription"
+                >
+                    Loading subject information...
+                </p>
+
+            </div>
+
+            <div
+                class="subject-main-icon"
+                id="subjectIcon"
+            >
+                📚
+            </div>
 
         </section>
 
 
-        <!-- SUBJECT CARDS ARE GENERATED HERE -->
+        <!-- SUBJECT STATS -->
 
-        <section
-            class="subjects-grid"
-            id="subjectsGrid"
-        >
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📊
+                </div>
+
+                <div>
+
+                    <p>
+                        Average Score
+                    </p>
+
+                    <h2 id="subjectAverage">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📚
+                </div>
+
+                <div>
+
+                    <p>
+                        Topics
+                    </p>
+
+                    <h2 id="subjectTopics">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏱️
+                </div>
+
+                <div>
+
+                    <p>
+                        Study Time
+                    </p>
+
+                    <h2 id="subjectStudyTime">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TOPICS -->
+
+        <section class="topics-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        📚 TOPICS
+                    </span>
+
+                    <h2>
+                        Your Topics
+                    </h2>
+
+                    <p>
+                        Your performance across each topic.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- JAVASCRIPT CREATES TOPIC ROWS HERE -->
+
+            <div id="subjectTopicsList">
+
+            </div>
 
         </section>
 
@@ -106,11 +224,11 @@
     </footer>
 
 
-    <!-- DATA FIRST -->
+    <!-- DATA -->
 
     <script src="data/sample-data.js"></script>
 
-    <!-- APPLICATION LOGIC -->
+    <!-- APPLICATION -->
 
     <script src="script.js"></script>
 
