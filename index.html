@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="landing.css">
 </head>
 <body class="landing-page">
-
     <div class="landing-glow" id="landingGlow"></div>
 
     <header class="landing-nav">
@@ -23,13 +22,8 @@
         <section class="landing-hero">
             <p class="landing-kicker">YOUR STUDY SPACE</p>
             <h1>Study<span>OS</span></h1>
-            <p class="landing-description">
-                A simple place to organize your subjects, track your progress,
-                and know what to study next.
-            </p>
-            <button class="landing-start" id="heroCreateButton">
-                Create your account <span>→</span>
-            </button>
+            <p class="landing-description">A simple place to organize your subjects, keep your study material together, and know what to work on next.</p>
+            <button class="landing-start" id="heroCreateButton">Create your account <span>→</span></button>
         </section>
     </main>
 
@@ -37,26 +31,26 @@
         <div class="landing-modal-backdrop" data-close-account></div>
         <section class="landing-modal-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
             <div class="landing-modal-heading">
-                <div>
-                    <p class="landing-kicker">GET STARTED</p>
-                    <h2 id="accountTitle">Create your account</h2>
-                </div>
+                <div><p class="landing-kicker">GET STARTED</p><h2 id="accountTitle">Create your account</h2></div>
                 <button class="landing-modal-close" id="closeAccountModal" aria-label="Close">×</button>
             </div>
             <form id="accountForm">
-                <label>
-                    Your name
-                    <input id="accountName" type="text" placeholder="e.g. Darshan" maxlength="60" required>
+                <label>Full name<input id="accountName" type="text" maxlength="60" autocomplete="name" required></label>
+                <label>Gender
+                    <select id="accountGender" required>
+                        <option value="" selected disabled>Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="non-binary">Non-binary</option>
+                        <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
                 </label>
-                <label>
-                    Email
-                    <input id="accountEmail" type="email" placeholder="you@example.com" required>
-                </label>
+                <label>Email<input id="accountEmail" type="email" autocomplete="email" required></label>
+                <label>Password<input id="accountPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+                <p class="form-error" id="accountError"></p>
                 <button type="submit" class="landing-form-submit">Create account</button>
             </form>
-            <p class="landing-note">
-                This is the prototype account flow. Your information is stored only in this browser for now.
-            </p>
+            <p class="landing-note">Prototype mode: account data is stored in this browser. Real secure authentication will be added with the backend.</p>
         </section>
     </div>
 
@@ -64,107 +58,78 @@
         <div class="landing-modal-backdrop" data-close-signin></div>
         <section class="landing-modal-card" role="dialog" aria-modal="true" aria-labelledby="signInTitle">
             <div class="landing-modal-heading">
-                <div>
-                    <p class="landing-kicker">WELCOME BACK</p>
-                    <h2 id="signInTitle">Sign in</h2>
-                </div>
+                <div><p class="landing-kicker">WELCOME BACK</p><h2 id="signInTitle">Sign in</h2></div>
                 <button class="landing-modal-close" id="closeSignInModal" aria-label="Close">×</button>
             </div>
             <form id="signInForm">
-                <label>
-                    Email
-                    <input id="signInEmail" type="email" placeholder="you@example.com" required>
-                </label>
-                <button type="submit" class="landing-form-submit">Continue</button>
+                <label>Email<input id="signInEmail" type="email" autocomplete="email" required></label>
+                <label>Password<input id="signInPassword" type="password" autocomplete="current-password" required></label>
+                <p class="form-error" id="signInError"></p>
+                <button type="submit" class="landing-form-submit">Sign in</button>
             </form>
-            <p class="landing-note">
-                Prototype sign-in: use the email you used when creating the account on this browser.
-            </p>
         </section>
     </div>
 
+    <script src="data/storage.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const ACCOUNT_KEY = "studyOS-account";
-            let account = null;
+    document.addEventListener("DOMContentLoaded", function () {
+        const ACCOUNT_KEY = "studyOS-account";
+        const accountModal = document.getElementById("accountModal");
+        const signInModal = document.getElementById("signInModal");
+        const glow = document.getElementById("landingGlow");
 
-            try {
-                account = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
-            } catch (error) {
-                account = null;
-            }
-
-            if (account && account.email) {
-                window.location.replace("dashboard.html");
-                return;
-            }
-
-            const glow = document.getElementById("landingGlow");
-            const accountModal = document.getElementById("accountModal");
-            const signInModal = document.getElementById("signInModal");
-
-            function openModal(modal) {
-                modal.classList.remove("hidden");
-                modal.setAttribute("aria-hidden", "false");
-                document.body.classList.add("modal-open");
-            }
-
-            function closeModal(modal) {
-                modal.classList.add("hidden");
-                modal.setAttribute("aria-hidden", "true");
-                if (accountModal.classList.contains("hidden") && signInModal.classList.contains("hidden")) {
-                    document.body.classList.remove("modal-open");
-                }
-            }
-
-            document.getElementById("createAccountButton").addEventListener("click", () => openModal(accountModal));
-            document.getElementById("heroCreateButton").addEventListener("click", () => openModal(accountModal));
-            document.getElementById("signInButton").addEventListener("click", () => openModal(signInModal));
-            document.getElementById("closeAccountModal").addEventListener("click", () => closeModal(accountModal));
-            document.getElementById("closeSignInModal").addEventListener("click", () => closeModal(signInModal));
-            document.querySelector("[data-close-account]").addEventListener("click", () => closeModal(accountModal));
-            document.querySelector("[data-close-signin]").addEventListener("click", () => closeModal(signInModal));
-
-            document.getElementById("accountForm").addEventListener("submit", function (event) {
-                event.preventDefault();
-                const name = document.getElementById("accountName").value.trim();
-                const email = document.getElementById("accountEmail").value.trim().toLowerCase();
-
-                if (!name || !email) return;
-
-                localStorage.setItem(ACCOUNT_KEY, JSON.stringify({
-                    name: name,
-                    email: email,
-                    createdAt: new Date().toISOString()
-                }));
-
-                window.location.href = "dashboard.html";
+        function getAccount() {
+            try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY)); } catch { return null; }
+        }
+        function openModal(modal) { modal.classList.remove("hidden"); modal.setAttribute("aria-hidden", "false"); document.body.classList.add("modal-open"); }
+        function closeModal(modal) { modal.classList.add("hidden"); modal.setAttribute("aria-hidden", "true"); if (accountModal.classList.contains("hidden") && signInModal.classList.contains("hidden")) document.body.classList.remove("modal-open"); }
+        function hashPassword(password) {
+            return crypto.subtle.digest("SHA-256", new TextEncoder().encode(password)).then(function (buffer) {
+                return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
             });
+        }
 
-            document.getElementById("signInForm").addEventListener("submit", function (event) {
-                event.preventDefault();
-                const email = document.getElementById("signInEmail").value.trim().toLowerCase();
-                let savedAccount = null;
+        if (getAccount()) { window.location.replace("dashboard.html"); return; }
 
-                try {
-                    savedAccount = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
-                } catch (error) {
-                    savedAccount = null;
-                }
+        document.getElementById("createAccountButton").onclick = () => openModal(accountModal);
+        document.getElementById("heroCreateButton").onclick = () => openModal(accountModal);
+        document.getElementById("signInButton").onclick = () => openModal(signInModal);
+        document.getElementById("closeAccountModal").onclick = () => closeModal(accountModal);
+        document.getElementById("closeSignInModal").onclick = () => closeModal(signInModal);
+        document.querySelector("[data-close-account]").onclick = () => closeModal(accountModal);
+        document.querySelector("[data-close-signin]").onclick = () => closeModal(signInModal);
 
-                if (savedAccount && savedAccount.email === email) {
-                    window.location.href = "dashboard.html";
-                } else {
-                    alert("No account with that email was found on this browser. Create an account first.");
-                }
-            });
-
-            document.addEventListener("mousemove", function (event) {
-                if (!glow) return;
-                glow.style.left = `${event.clientX}px`;
-                glow.style.top = `${event.clientY}px`;
-            });
+        document.getElementById("accountForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const name = document.getElementById("accountName").value.trim();
+            const gender = document.getElementById("accountGender").value;
+            const email = document.getElementById("accountEmail").value.trim().toLowerCase();
+            const password = document.getElementById("accountPassword").value;
+            const error = document.getElementById("accountError");
+            error.textContent = "";
+            if (password.length < 8) { error.textContent = "Password must be at least 8 characters."; return; }
+            if (getAccount()) { error.textContent = "An account already exists in this browser. Please sign in."; return; }
+            const passwordHash = await hashPassword(password);
+            localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ name, gender, email, passwordHash, createdAt: new Date().toISOString() }));
+            window.location.href = "dashboard.html";
         });
+
+        document.getElementById("signInForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const email = document.getElementById("signInEmail").value.trim().toLowerCase();
+            const password = document.getElementById("signInPassword").value;
+            const error = document.getElementById("signInError");
+            const account = getAccount();
+            if (!account) { error.textContent = "No account was found in this browser. Create an account first."; return; }
+            const passwordHash = await hashPassword(password);
+            if (account.email !== email || account.passwordHash !== passwordHash) { error.textContent = "Email or password is incorrect."; return; }
+            window.location.href = "dashboard.html";
+        });
+
+        document.addEventListener("mousemove", function (event) {
+            if (glow) { glow.style.left = `${event.clientX}px`; glow.style.top = `${event.clientY}px`; }
+        });
+    });
     </script>
 </body>
 </html>
