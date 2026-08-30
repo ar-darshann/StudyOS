@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Subjects | StudyOS</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Study<span>OS</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Dashboard
+            </a>
+
+            <a
+                href="subjects.html"
+                class="active"
+            >
+                Subjects
+            </a>
+
+            <a href="#">
+                Progress
+            </a>
+
+        </div>
+
+        <div class="nav-actions">
+
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle light and dark mode"
+            >
+                <span id="themeIcon">☀️</span>
+            </button>
+
+            <button class="profile-button">
+                SD
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+        <section class="page-header">
+
+            <p class="eyebrow">
+                YOUR LEARNING SPACE
+            </p>
+
+            <h1>
+                Your Subjects
+            </h1>
+
+            <p class="welcome-text">
+                Track your performance and focus on what matters.
+            </p>
+
+        </section>
+
+
+        <!-- SUBJECT CARDS ARE GENERATED HERE -->
+
+        <section
+            class="subjects-grid"
+            id="subjectsGrid"
+        >
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            StudyOS • Built for better studying.
+        </p>
+
+    </footer>
+
+
+    <!-- DATA FIRST -->
+
+    <script src="data/sample-data.js"></script>
+
+    <!-- APPLICATION LOGIC -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
