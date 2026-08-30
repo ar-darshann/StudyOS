@@ -3,96 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyOS</title>
+    <title>StudyOS — Study, simply.</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .landing-page { min-height: 100vh; overflow: hidden; position: relative; background: #080808; color: #f5f5f5; }
+        .landing-header { position: relative; z-index: 10; display:flex; align-items:center; justify-content:space-between; padding:28px 5vw; }
+        .landing-logo { color:#fff; text-decoration:none; font-size:24px; font-weight:700; letter-spacing:-1px; }
+        .landing-logo span { font-weight:400; opacity:.55; }
+        .auth-actions { display:flex; align-items:center; gap:12px; }
+        .auth-link { color:#fff; text-decoration:none; padding:10px 16px; font-size:14px; border-radius:8px; }
+        .auth-link:hover { background:rgba(255,255,255,.08); }
+        .auth-button { color:#080808; background:#fff; text-decoration:none; padding:11px 18px; border-radius:8px; font-size:14px; font-weight:600; transition:transform .2s ease, background .2s ease; }
+        .auth-button:hover { transform:translateY(-1px); background:#e8e8e8; }
+        .landing-main { min-height:calc(100vh - 82px); display:flex; align-items:center; justify-content:center; text-align:center; position:relative; z-index:5; padding:40px 24px 100px; }
+        .hero-copy { max-width:850px; }
+        .hero-kicker { margin:0 0 22px; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.48); }
+        .hero-title { margin:0; font-size:clamp(64px, 11vw, 150px); line-height:.9; letter-spacing:-7px; font-weight:700; }
+        .hero-title span { color:rgba(255,255,255,.35); font-weight:400; }
+        .hero-subtitle { max-width:530px; margin:32px auto 0; font-size:18px; line-height:1.7; color:rgba(255,255,255,.58); }
+        .hero-cta { display:inline-flex; margin-top:34px; padding:14px 22px; border-radius:9px; background:#fff; color:#080808; text-decoration:none; font-weight:600; font-size:15px; transition:transform .2s ease; }
+        .hero-cta:hover { transform:translateY(-2px); }
+        .interactive-bg { position:absolute; inset:0; z-index:1; pointer-events:none; }
+        .orb { position:absolute; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.10), rgba(255,255,255,0) 68%); filter:blur(5px); transform:translate(-50%,-50%); transition:left .7s cubic-bezier(.2,.8,.2,1), top .7s cubic-bezier(.2,.8,.2,1); }
+        .grid-glow { position:absolute; inset:0; opacity:.20; background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size:70px 70px; mask-image:radial-gradient(circle at center, black 0%, transparent 72%); }
+        .landing-footer { position:absolute; z-index:10; bottom:22px; left:0; right:0; text-align:center; font-size:12px; color:rgba(255,255,255,.28); }
+        @media (max-width:600px) { .landing-header { padding:22px 20px; } .auth-link { display:none; } .hero-title { letter-spacing:-4px; } .hero-subtitle { font-size:16px; } }
+    </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <a href="index.html" class="logo">Study<span>OS</span></a>
-        <div class="nav-links">
-            <a href="index.html" class="active">Dashboard</a>
-            <a href="subjectui.html">Subjects</a>
-            <a href="#" class="disabled-link">Progress</a>
+    <div class="landing-page" id="landingPage">
+        <div class="interactive-bg">
+            <div class="grid-glow"></div>
+            <div class="orb" id="mouseOrb"></div>
         </div>
-        <div class="nav-actions">
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <span id="themeIcon">☀</span>
-            </button>
-            <button class="profile-button" aria-label="Profile">SD</button>
-        </div>
-    </nav>
 
-    <main class="container">
-        <header class="dashboard-header">
-            <div>
-                <p class="eyebrow">DASHBOARD</p>
-                <h1>Good morning.</h1>
-                <p class="welcome-text">Here is where your studies stand today.</p>
-            </div>
-            <div class="today-date" id="todayDate"></div>
+        <header class="landing-header">
+            <a href="index.html" class="landing-logo">Study<span>OS</span></a>
+            <nav class="auth-actions" aria-label="Account">
+                <a href="#" class="auth-link" id="signInLink">Sign in</a>
+                <a href="#" class="auth-button" id="createAccountLink">Create account</a>
+            </nav>
         </header>
 
-        <section class="stats-grid" aria-label="Study statistics">
-            <div class="stat-card">
-                <span class="stat-label">Average score</span>
-                <strong id="dashboardAverage">—</strong>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Study time</span>
-                <strong id="dashboardStudyTime">—</strong>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Topics needing attention</span>
-                <strong id="dashboardWeakTopics">—</strong>
-            </div>
-        </section>
+        <main class="landing-main">
+            <section class="hero-copy">
+                <p class="hero-kicker">A simpler way to study</p>
+                <h1 class="hero-title">Study<span>OS</span></h1>
+                <p class="hero-subtitle">One calm place to organize your subjects, understand your progress, and know what to study next.</p>
+                <a href="#" class="hero-cta" id="heroCta">Get started <span>&nbsp;→</span></a>
+            </section>
+        </main>
 
-        <section class="dashboard-grid">
-            <article class="focus-panel">
-                <div class="panel-heading">
-                    <div>
-                        <p class="section-kicker">NEXT UP</p>
-                        <h2 id="focusSubject">—</h2>
-                    </div>
-                    <span class="score-chip" id="focusScore">—</span>
-                </div>
-                <p class="focus-topic" id="focusTopic">—</p>
-                <div class="progress-track">
-                    <div class="progress-value" id="focusProgress"></div>
-                </div>
-                <a href="#" id="focusLink" class="text-button">Continue studying <span>→</span></a>
-            </article>
+        <div class="landing-footer">Your studies. One place.</div>
+    </div>
 
-            <article class="subjects-panel">
-                <div class="panel-heading">
-                    <div>
-                        <p class="section-kicker">YOUR SUBJECTS</p>
-                        <h2>Keep moving.</h2>
-                    </div>
-                    <a href="subjectui.html" class="text-button">View all <span>→</span></a>
-                </div>
-                <div id="dashboardSubjects" class="dashboard-subject-list"></div>
-            </article>
-        </section>
+    <script>
+        const page = document.getElementById('landingPage');
+        const orb = document.getElementById('mouseOrb');
+        let targetX = window.innerWidth / 2;
+        let targetY = window.innerHeight / 2;
+        let currentX = targetX;
+        let currentY = targetY;
 
-        <section class="simple-section">
-            <div class="section-heading-row">
-                <div>
-                    <p class="section-kicker">FOCUS AREAS</p>
-                    <h2>Topics that need work</h2>
-                </div>
-            </div>
-            <div id="dashboardTopics" class="attention-list"></div>
-        </section>
-    </main>
+        function animateOrb() {
+            currentX += (targetX - currentX) * 0.08;
+            currentY += (targetY - currentY) * 0.08;
+            orb.style.left = currentX + 'px';
+            orb.style.top = currentY + 'px';
+            requestAnimationFrame(animateOrb);
+        }
 
-    <footer>
-        <p>StudyOS</p>
-    </footer>
+        page.addEventListener('mousemove', function (event) {
+            targetX = event.clientX;
+            targetY = event.clientY;
+        });
 
-    <script src="data/sample-data.js"></script>
-    <script src="data/storage.js"></script>
-    <script src="script.js"></script>
+        page.addEventListener('mouseleave', function () {
+            targetX = window.innerWidth / 2;
+            targetY = window.innerHeight / 2;
+        });
+
+        animateOrb();
+
+        document.getElementById('heroCta').addEventListener('click', function (event) {
+            event.preventDefault();
+            window.location.href = 'subjectui.html';
+        });
+
+        document.getElementById('signInLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            alert('Sign in will be connected when we build authentication.');
+        });
+
+        document.getElementById('createAccountLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            alert('Account creation will be connected when we build authentication.');
+        });
+    </script>
 </body>
 </html>
