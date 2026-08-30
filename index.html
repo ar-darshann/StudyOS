@@ -4,6 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -36,7 +37,7 @@
                 Dashboard
             </a>
 
-            <a href="subjects.html">
+            <a href="subjectui.html">
                 Subjects
             </a>
 
@@ -182,7 +183,10 @@
 
             <!-- TODAY'S FOCUS -->
 
-            <div class="focus-card">
+            <div
+                class="focus-card"
+                id="dashboardFocus"
+            >
 
                 <div class="card-top">
 
@@ -196,12 +200,15 @@
 
                 </div>
 
-                <h2>
-                    Economics
+                <h2 id="focusSubject">
+                    Loading...
                 </h2>
 
-                <p class="focus-topic">
-                    Demand & Supply
+                <p
+                    class="focus-topic"
+                    id="focusTopic"
+                >
+                    Loading...
                 </p>
 
                 <div class="focus-score">
@@ -212,8 +219,8 @@
                             Current score
                         </span>
 
-                        <strong>
-                            63%
+                        <strong id="focusScore">
+                            --
                         </strong>
 
                     </div>
@@ -222,7 +229,8 @@
 
                         <div
                             class="progress-fill"
-                            style="width: 63%;"
+                            id="focusProgress"
+                            style="width: 0%;"
                         ></div>
 
                     </div>
@@ -230,7 +238,8 @@
                 </div>
 
                 <a
-                    href="subject.html?subject=economics"
+                    href="#"
+                    id="focusLink"
                     class="primary-button"
                 >
                     Start Studying →
@@ -264,83 +273,9 @@
                 </div>
 
 
-                <div class="exam">
+                <div id="dashboardExams">
 
-                    <div class="exam-info">
-
-                        <span class="exam-dot economics"></span>
-
-                        <div>
-
-                            <strong>
-                                Economics
-                            </strong>
-
-                            <small>
-                                14 days left
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                    <strong>
-                        12 Sep
-                    </strong>
-
-                </div>
-
-
-                <div class="exam">
-
-                    <div class="exam-info">
-
-                        <span class="exam-dot accounting"></span>
-
-                        <div>
-
-                            <strong>
-                                Accounting
-                            </strong>
-
-                            <small>
-                                17 days left
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                    <strong>
-                        15 Sep
-                    </strong>
-
-                </div>
-
-
-                <div class="exam">
-
-                    <div class="exam-info">
-
-                        <span class="exam-dot marketing"></span>
-
-                        <div>
-
-                            <strong>
-                                Marketing
-                            </strong>
-
-                            <small>
-                                20 days left
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                    <strong>
-                        18 Sep
-                    </strong>
+                    <!-- JavaScript will populate this -->
 
                 </div>
 
@@ -378,159 +313,12 @@
             </div>
 
 
-            <div class="topics-list">
+            <div
+                class="topics-list"
+                id="dashboardTopics"
+            >
 
-
-                <div class="topic">
-
-                    <div class="topic-info">
-
-                        <div class="topic-title">
-
-                            <strong>
-                                Sale of Goods
-                            </strong>
-
-                            <span class="subject-tag">
-                                Business Law
-                            </span>
-
-                        </div>
-
-                        <div class="mini-progress">
-
-                            <div
-                                class="mini-progress-fill danger"
-                                style="width: 56%;"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <strong class="score danger">
-                        56%
-                    </strong>
-
-                    <button class="practice-button">
-                        Practice
-                    </button>
-
-                </div>
-
-
-                <div class="topic">
-
-                    <div class="topic-info">
-
-                        <div class="topic-title">
-
-                            <strong>
-                                Consumer Protection
-                            </strong>
-
-                            <span class="subject-tag">
-                                Business Law
-                            </span>
-
-                        </div>
-
-                        <div class="mini-progress">
-
-                            <div
-                                class="mini-progress-fill danger"
-                                style="width: 56.5%;"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <strong class="score danger">
-                        56.5%
-                    </strong>
-
-                    <button class="practice-button">
-                        Practice
-                    </button>
-
-                </div>
-
-
-                <div class="topic">
-
-                    <div class="topic-info">
-
-                        <div class="topic-title">
-
-                            <strong>
-                                Segmentation
-                            </strong>
-
-                            <span class="subject-tag">
-                                Marketing
-                            </span>
-
-                        </div>
-
-                        <div class="mini-progress">
-
-                            <div
-                                class="mini-progress-fill warning"
-                                style="width: 57.5%;"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <strong class="score warning">
-                        57.5%
-                    </strong>
-
-                    <button class="practice-button">
-                        Practice
-                    </button>
-
-                </div>
-
-
-                <div class="topic">
-
-                    <div class="topic-info">
-
-                        <div class="topic-title">
-
-                            <strong>
-                                Final Accounts
-                            </strong>
-
-                            <span class="subject-tag">
-                                Accounting
-                            </span>
-
-                        </div>
-
-                        <div class="mini-progress">
-
-                            <div
-                                class="mini-progress-fill warning"
-                                style="width: 59%;"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <strong class="score warning">
-                        59%
-                    </strong>
-
-                    <button class="practice-button">
-                        Practice
-                    </button>
-
-                </div>
+                <!-- JavaScript will populate this -->
 
             </div>
 
@@ -549,6 +337,12 @@
 
     </footer>
 
+
+    <!-- DATA -->
+
+    <script src="data/sample-data.js"></script>
+
+    <!-- APPLICATION -->
 
     <script src="script.js"></script>
 
