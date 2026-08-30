@@ -3,102 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyOS — Study, simply.</title>
+    <title>StudyOS</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .landing-page { min-height: 100vh; overflow: hidden; position: relative; background: #080808; color: #f5f5f5; }
-        .landing-header { position: relative; z-index: 10; display:flex; align-items:center; justify-content:space-between; padding:28px 5vw; }
-        .landing-logo { color:#fff; text-decoration:none; font-size:24px; font-weight:700; letter-spacing:-1px; }
-        .landing-logo span { font-weight:400; opacity:.55; }
-        .auth-actions { display:flex; align-items:center; gap:12px; }
-        .auth-link { color:#fff; text-decoration:none; padding:10px 16px; font-size:14px; border-radius:8px; }
-        .auth-link:hover { background:rgba(255,255,255,.08); }
-        .auth-button { color:#080808; background:#fff; text-decoration:none; padding:11px 18px; border-radius:8px; font-size:14px; font-weight:600; transition:transform .2s ease, background .2s ease; }
-        .auth-button:hover { transform:translateY(-1px); background:#e8e8e8; }
-        .landing-main { min-height:calc(100vh - 82px); display:flex; align-items:center; justify-content:center; text-align:center; position:relative; z-index:5; padding:40px 24px 100px; }
-        .hero-copy { max-width:850px; }
-        .hero-kicker { margin:0 0 22px; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.48); }
-        .hero-title { margin:0; font-size:clamp(64px, 11vw, 150px); line-height:.9; letter-spacing:-7px; font-weight:700; }
-        .hero-title span { color:rgba(255,255,255,.35); font-weight:400; }
-        .hero-subtitle { max-width:530px; margin:32px auto 0; font-size:18px; line-height:1.7; color:rgba(255,255,255,.58); }
-        .hero-cta { display:inline-flex; margin-top:34px; padding:14px 22px; border-radius:9px; background:#fff; color:#080808; text-decoration:none; font-weight:600; font-size:15px; transition:transform .2s ease; }
-        .hero-cta:hover { transform:translateY(-2px); }
-        .interactive-bg { position:absolute; inset:0; z-index:1; pointer-events:none; }
-        .orb { position:absolute; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.10), rgba(255,255,255,0) 68%); filter:blur(5px); transform:translate(-50%,-50%); transition:left .7s cubic-bezier(.2,.8,.2,1), top .7s cubic-bezier(.2,.8,.2,1); }
-        .grid-glow { position:absolute; inset:0; opacity:.20; background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size:70px 70px; mask-image:radial-gradient(circle at center, black 0%, transparent 72%); }
-        .landing-footer { position:absolute; z-index:10; bottom:22px; left:0; right:0; text-align:center; font-size:12px; color:rgba(255,255,255,.28); }
-        @media (max-width:600px) { .landing-header { padding:22px 20px; } .auth-link { display:none; } .hero-title { letter-spacing:-4px; } .hero-subtitle { font-size:16px; } }
-    </style>
 </head>
-<body>
-    <div class="landing-page" id="landingPage">
-        <div class="interactive-bg">
-            <div class="grid-glow"></div>
-            <div class="orb" id="mouseOrb"></div>
+<body class="landing-page">
+
+    <div class="landing-glow" id="landingGlow"></div>
+
+    <header class="landing-nav">
+        <a href="index.html" class="landing-logo">Study<span>OS</span></a>
+
+        <div class="landing-actions">
+            <button class="landing-link" id="signInButton">Sign in</button>
+            <button class="landing-cta" id="createAccountButton">Create account</button>
         </div>
+    </header>
 
-        <header class="landing-header">
-            <a href="index.html" class="landing-logo">Study<span>OS</span></a>
-            <nav class="auth-actions" aria-label="Account">
-                <a href="#" class="auth-link" id="signInLink">Sign in</a>
-                <a href="#" class="auth-button" id="createAccountLink">Create account</a>
-            </nav>
-        </header>
+    <main class="landing-main">
+        <section class="landing-hero">
+            <p class="landing-kicker">YOUR STUDY SPACE</p>
+            <h1>Study<span>OS</span></h1>
+            <p class="landing-description">
+                A simple place to organize your subjects, track your progress,
+                and know what to study next.
+            </p>
+            <button class="landing-start" id="heroCreateButton">
+                Create your account <span>→</span>
+            </button>
+        </section>
+    </main>
 
-        <main class="landing-main">
-            <section class="hero-copy">
-                <p class="hero-kicker">A simpler way to study</p>
-                <h1 class="hero-title">Study<span>OS</span></h1>
-                <p class="hero-subtitle">One calm place to organize your subjects, understand your progress, and know what to study next.</p>
-                <a href="#" class="hero-cta" id="heroCta">Get started <span>&nbsp;→</span></a>
-            </section>
-        </main>
+    <div class="landing-modal hidden" id="accountModal" aria-hidden="true">
+        <div class="landing-modal-backdrop" data-close-account></div>
 
-        <div class="landing-footer">Your studies. One place.</div>
+        <section class="landing-modal-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+            <div class="landing-modal-heading">
+                <div>
+                    <p class="landing-kicker">GET STARTED</p>
+                    <h2 id="accountTitle">Create your account</h2>
+                </div>
+                <button class="landing-modal-close" id="closeAccountModal" aria-label="Close">×</button>
+            </div>
+
+            <form id="accountForm">
+                <label>
+                    Your name
+                    <input id="accountName" type="text" placeholder="e.g. Darshan" maxlength="60" required>
+                </label>
+
+                <label>
+                    Email
+                    <input id="accountEmail" type="email" placeholder="you@example.com" required>
+                </label>
+
+                <button type="submit" class="landing-form-submit">Create account</button>
+            </form>
+
+            <p class="landing-note">
+                This is the prototype account flow. Your information is stored only in this browser for now.
+            </p>
+        </section>
+    </div>
+
+    <div class="landing-modal hidden" id="signInModal" aria-hidden="true">
+        <div class="landing-modal-backdrop" data-close-signin></div>
+
+        <section class="landing-modal-card" role="dialog" aria-modal="true" aria-labelledby="signInTitle">
+            <div class="landing-modal-heading">
+                <div>
+                    <p class="landing-kicker">WELCOME BACK</p>
+                    <h2 id="signInTitle">Sign in</h2>
+                </div>
+                <button class="landing-modal-close" id="closeSignInModal" aria-label="Close">×</button>
+            </div>
+
+            <form id="signInForm">
+                <label>
+                    Email
+                    <input id="signInEmail" type="email" placeholder="you@example.com" required>
+                </label>
+
+                <button type="submit" class="landing-form-submit">Continue</button>
+            </form>
+
+            <p class="landing-note">
+                Prototype sign-in: use the email you used when creating the account on this browser.
+            </p>
+        </section>
     </div>
 
     <script>
-        const page = document.getElementById('landingPage');
-        const orb = document.getElementById('mouseOrb');
-        let targetX = window.innerWidth / 2;
-        let targetY = window.innerHeight / 2;
-        let currentX = targetX;
-        let currentY = targetY;
+        document.addEventListener("DOMContentLoaded", function () {
 
-        function animateOrb() {
-            currentX += (targetX - currentX) * 0.08;
-            currentY += (targetY - currentY) * 0.08;
-            orb.style.left = currentX + 'px';
-            orb.style.top = currentY + 'px';
-            requestAnimationFrame(animateOrb);
-        }
+            const ACCOUNT_KEY = "studyOS-account";
 
-        page.addEventListener('mousemove', function (event) {
-            targetX = event.clientX;
-            targetY = event.clientY;
-        });
+            let account = null;
 
-        page.addEventListener('mouseleave', function () {
-            targetX = window.innerWidth / 2;
-            targetY = window.innerHeight / 2;
-        });
+            try {
+                account = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
+            } catch (error) {
+                account = null;
+            }
 
-        animateOrb();
+            if (account && account.email) {
+                window.location.replace("dashboard.html");
+                return;
+            }
 
-        document.getElementById('heroCta').addEventListener('click', function (event) {
-            event.preventDefault();
-            window.location.href = 'subjectui.html';
-        });
+            const glow = document.getElementById("landingGlow");
+            const accountModal = document.getElementById("accountModal");
+            const signInModal = document.getElementById("signInModal");
 
-        document.getElementById('signInLink').addEventListener('click', function (event) {
-            event.preventDefault();
-            alert('Sign in will be connected when we build authentication.');
-        });
+            function openModal(modal) {
+                modal.classList.remove("hidden");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.classList.add("modal-open");
+            }
 
-        document.getElementById('createAccountLink').addEventListener('click', function (event) {
-            event.preventDefault();
-            alert('Account creation will be connected when we build authentication.');
+            function closeModal(modal) {
+                modal.classList.add("hidden");
+                modal.setAttribute("aria-hidden", "true");
+
+                if (
+                    accountModal.classList.contains("hidden") &&
+                    signInModal.classList.contains("hidden")
+                ) {
+                    document.body.classList.remove("modal-open");
+                }
+            }
+
+            document.getElementById("createAccountButton").addEventListener("click", function () {
+                openModal(accountModal);
+            });
+
+            document.getElementById("heroCreateButton").addEventListener("click", function () {
+                openModal(accountModal);
+            });
+
+            document.getElementById("signInButton").addEventListener("click", function () {
+                openModal(signInModal);
+            });
+
+            document.getElementById("closeAccountModal").addEventListener("click", function () {
+                closeModal(accountModal);
+            });
+
+            document.getElementById("closeSignInModal").addEventListener("click", function () {
+                closeModal(signInModal);
+            });
+
+            document.querySelector("[data-close-account]").addEventListener("click", function () {
+                closeModal(accountModal);
+            });
+
+            document.querySelector("[data-close-signin]").addEventListener("click", function () {
+                closeModal(signInModal);
+            });
+
+            document.getElementById("accountForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const name = document.getElementById("accountName").value.trim();
+                const email = document.getElementById("accountEmail").value.trim().toLowerCase();
+
+                if (!name || !email) {
+                    return;
+                }
+
+                localStorage.setItem(
+                    ACCOUNT_KEY,
+                    JSON.stringify({
+                        name: name,
+                        email: email,
+                        createdAt: new Date().toISOString()
+                    })
+                );
+
+                window.location.href = "dashboard.html";
+            });
+
+            document.getElementById("signInForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const email = document.getElementById("signInEmail").value.trim().toLowerCase();
+
+                let savedAccount = null;
+
+                try {
+                    savedAccount = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
+                } catch (error) {
+                    savedAccount = null;
+                }
+
+                if (
+                    savedAccount &&
+                    savedAccount.email === email
+                ) {
+                    window.location.href = "dashboard.html";
+                    return;
+                }
+
+                alert("No account with that email was found on this browser. Create an account first.");
+            });
+
+            document.addEventListener("mousemove", function (event) {
+
+                if (!glow) {
+                    return;
+                }
+
+                glow.style.left = `${event.clientX}px`;
+                glow.style.top = `${event.clientY}px`;
+
+            });
+
         });
     </script>
+
 </body>
 </html>
