@@ -1,20 +1,27 @@
 /* =========================================
-   STUDYOS LOCAL DATA LAYER
-   Temporary prototype storage. Replace with a
-   real authenticated database later.
+   NIVORA LOCAL DATA LAYER
+   Temporary prototype storage.
 ========================================= */
 
 (function () {
     const SUBJECTS_KEY = "studyOS-subjects";
+    const ACCOUNT_KEY = "studyOS-account";
     const VERSION_KEY = "studyOS-data-version";
-    const CURRENT_VERSION = "3";
+    const CURRENT_VERSION = "4";
     const DB_NAME = "StudyOSMaterials";
     const STORE_NAME = "materials";
 
-    /* Remove the old demo dataset exactly once. */
+    /* Reset old prototype accounts, subjects and materials once. */
     if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
         localStorage.removeItem(SUBJECTS_KEY);
+        localStorage.removeItem(ACCOUNT_KEY);
         localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+
+        try {
+            indexedDB.deleteDatabase(DB_NAME);
+        } catch (error) {
+            console.warn("Could not reset local material database.", error);
+        }
     }
 
     function readSubjects() {
@@ -32,6 +39,7 @@
     function openDB() {
         return new Promise(function (resolve, reject) {
             const request = indexedDB.open(DB_NAME, 1);
+
             request.onupgradeneeded = function () {
                 const db = request.result;
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
@@ -39,6 +47,7 @@
                     store.createIndex("subjectId", "subjectId", { unique: false });
                 }
             };
+
             request.onsuccess = () => resolve(request.result);
             request.onerror = () => reject(request.error);
         });
@@ -48,14 +57,45 @@
 
     window.studyOSStorage = {
         getSubjects: readSubjects,
+
         saveSubjects: function (subjects) {
             window.studyOSData.subjects = subjects;
             writeSubjects(subjects);
         },
+
         clearSubjects: function () {
             localStorage.removeItem(SUBJECTS_KEY);
             window.studyOSData.subjects = {};
         },
+
+        deleteSubject: async function (subjectId) {
+            const subjects = readSubjects();
+            delete subjects[subjectId];
+            writeSubjects(subjects);
+            window.studyOSData.subjects = subjects;
+
+            try {
+                const db = await openDB();
+                const materials = await new Promise(function (resolve, reject) {
+                    const tx = db.transaction(STORE_NAME, "readonly");
+                    const request = tx.objectStore(STORE_NAME).index("subjectId").getAll(subjectId);
+                    request.onsuccess = () => resolve(request.result || []);
+                    request.onerror = () => reject(request.error);
+                });
+
+                await new Promise(function (resolve, reject) {
+                    const tx = db.transaction(STORE_NAME, "readwrite");
+                    materials.forEach(material => tx.objectStore(STORE_NAME).delete(material.id));
+                    tx.oncomplete = resolve;
+                    tx.onerror = () => reject(tx.error);
+                });
+
+                db.close();
+            } catch (error) {
+                console.warn("Could not remove subject materials.", error);
+            }
+        },
+
         addMaterial: async function (material) {
             const db = await openDB();
             return new Promise(function (resolve, reject) {
@@ -65,6 +105,7 @@
                 tx.onerror = () => { db.close(); reject(tx.error); };
             });
         },
+
         getMaterials: async function (subjectId) {
             const db = await openDB();
             return new Promise(function (resolve, reject) {
@@ -74,6 +115,7 @@
                 request.onerror = () => { db.close(); reject(request.error); };
             });
         },
+
         deleteMaterial: async function (id) {
             const db = await openDB();
             return new Promise(function (resolve, reject) {
