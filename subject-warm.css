@@ -1,0 +1,56 @@
+/* Nivora subject detail page: warm medium palette */
+.nivora-subject-page{background:var(--background)!important;color:var(--text)!important}
+.nivora-subject-page .navbar{background:color-mix(in srgb,var(--background) 94%,transparent)!important;border-bottom-color:var(--border)!important}
+.nivora-subject-page .logo,.nivora-subject-page .nav-links a{color:var(--text)}
+.nivora-subject-page .nav-links a{color:var(--muted)}
+.nivora-subject-page .nav-links a.active{color:var(--text)}
+.nivora-subject-page .nav-links a.active:after{background:var(--accent)!important}
+.nivora-leaf{color:var(--accent)!important}
+.subject-sidebar{border-right-color:var(--border)!important}
+.sidebar-subject-card,.subject-main .subject-stats,.subject-main .topics-section,.subject-main .subject-topic-row{background:var(--surface)!important;border-color:var(--border)!important}
+.sidebar-subject-card i{background:linear-gradient(90deg,var(--warm-sage) 34%,var(--surface-2) 34%)!important}
+.sidebar-nav a,.sidebar-logout{color:var(--muted)!important}
+.sidebar-nav a:hover{color:var(--text)!important;background:var(--surface-2)!important}
+.sidebar-nav a.active{color:var(--text)!important;background:color-mix(in srgb,var(--accent) 13%,var(--surface))!important}
+.sidebar-logout{border-color:var(--border)!important}
+.sidebar-logout:hover{border-color:var(--accent)!important;color:var(--text)!important}
+.subject-main .back-link{color:var(--muted)!important}
+.subject-main .back-link:hover{color:var(--accent)!important}
+.subject-main .eyebrow,.subject-main .section-kicker{color:var(--accent)!important}
+.subject-main .subject-stats{background:var(--surface)!important}
+.subject-main .stat-card{border-right-color:var(--border)!important}
+.subject-main .topics-section{background:var(--surface)!important}
+.subject-main .section-description{color:var(--muted)!important}
+.subject-main .subject-topic-row{background:var(--surface)!important;border-color:var(--border)!important}
+.subject-main .subject-topic-row:hover{background:color-mix(in srgb,var(--accent) 5%,var(--surface))!important;border-color:var(--accent)!important;box-shadow:0 8px 24px rgba(50,40,30,.12)!important}
+.subject-main .subject-topic-row>div:before{background:color-mix(in srgb,var(--warm-sage) 13%,var(--surface))!important;color:var(--warm-sage)!important;border-color:color-mix(in srgb,var(--warm-sage) 38%,var(--border))!important}
+.subject-main .subject-topic-row>strong{color:var(--muted)!important}
+.subject-main-icon{background:var(--warm-cream)!important;border-color:var(--border-strong)!important;color:var(--warm-sage)!important}
+.theme-toggle,.profile-button{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important}
+.profile-menu{background:var(--surface)!important;border-color:var(--border-strong)!important}
+.profile-menu button{color:var(--text)!important}
+.profile-menu button:hover{background:var(--surface-2)!important}
+.primary-button{background:var(--accent)!important;border-color:var(--accent)!important}
+.secondary-button{background:var(--surface)!important;border-color:var(--border-strong)!important;color:var(--text)!important}
+.secondary-button:hover{background:var(--surface-2)!important;border-color:var(--accent)!important}
+.topic-workspace{background:var(--surface)!important;border-color:var(--border-strong)!important;box-shadow:0 30px 90px rgba(35,27,20,.28)!important}
+.topic-modal-icon{background:color-mix(in srgb,var(--warm-sage) 15%,var(--surface))!important;color:var(--warm-sage)!important;box-shadow:none!important}
+.topic-tabs{background:var(--surface-2)!important}
+.topic-tab{color:var(--muted)!important}
+.topic-tab.active{background:color-mix(in srgb,var(--accent) 13%,var(--surface))!important;color:var(--text)!important;box-shadow:inset 0 -1px 0 var(--accent)!important}
+.material-action-card,.large-item,.pdf-result-card{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important}
+.material-action-card:hover{background:var(--surface-2)!important;border-color:var(--accent)!important}
+.material-action-icon{background:var(--surface-2)!important;color:var(--accent)!important}
+.topic-results-header,.pdf-result-info span,.pdf-result-info p,.topic-workspace-meta,.chat-intro p,.chat-disclaimer{color:var(--muted)!important}
+.pdf-add-result,.preview-button{background:var(--accent)!important;color:#fff5ed!important}
+.chat-messages{background:var(--background)!important;border-color:var(--border)!important}
+.chat-message{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important}
+.chat-form input{background:var(--surface-2)!important;border-color:var(--border-strong)!important;color:var(--text)!important}
+.chat-form button{background:var(--accent)!important;color:#fff5ed!important}
+.modal-backdrop{background:rgba(39,34,29,.56)!important}
+.modal-card{background:var(--surface)!important;border-color:var(--border-strong)!important}
+.modal-card input,.modal-card textarea{background:var(--surface-2)!important;border-color:var(--border-strong)!important;color:var(--text)!important}
+footer{background:var(--background)!important;border-top-color:var(--border)!important;color:var(--muted)!important}
+body.light .nivora-subject-page{background:var(--background)!important}
+body.light .topic-workspace{background:var(--surface)!important}
+@media(max-width:760px){.subject-main .subject-stats .stat-card{border-right:0!important;border-bottom-color:var(--border)!important}}
