@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Pathway | Nivora</title>
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="app-enhancements.css"><link rel="stylesheet" href="pathway.css">
+</head>
+<body class="app-page pathway-page">
+<div class="ambient-background" aria-hidden="true"><span></span><span></span><span></span></div>
+<nav class="navbar"><a href="dashboard.html" class="logo">Nivora</a><div class="nav-links"><a href="dashboard.html">Dashboard</a><a href="subjectui.html">Subjects</a><a href="pathway.html" class="active">Learning path</a></div><div class="nav-actions"><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span id="themeIcon">☀</span></button><div class="profile-wrap"><button class="profile-button" id="profileButton" aria-label="Open profile">—</button><div class="profile-menu hidden" id="profileMenu"><div class="profile-menu-name" id="profileMenuName">Profile</div><button id="setupAgainButton">Study setup</button><button id="logoutButton" class="logout-button">Log out</button></div></div></div></nav>
+<main class="container pathway-container">
+<header class="pathway-hero"><p class="eyebrow">PERSONAL LEARNING PATH</p><h1>Let's build a plan that fits <em>you.</em></h1><p class="welcome-text">Nivora combines what you tell it with your actual progress to decide what deserves your attention first.</p></header>
+<section class="pathway-card" id="assessmentCard">
+<div class="pathway-progress"><span id="stepLabel">STEP 1 OF 4</span><div><i id="stepProgress"></i></div></div>
+<div class="pathway-step active" data-step="1"><p class="section-kicker">START WITH YOU</p><h2>What are you struggling with?</h2><p class="section-description">Choose everything that feels difficult right now. There is no wrong answer.</p><div id="struggleSubjects" class="choice-grid"></div></div>
+<div class="pathway-step" data-step="2"><p class="section-kicker">GO DEEPER</p><h2>What makes those subjects difficult?</h2><p class="section-description">Pick the reasons that sound most like you.</p><div class="choice-grid" id="difficultyChoices"><button data-value="understanding">I understand it until I have to explain it</button><button data-value="problems">I understand the theory but struggle with problems</button><button data-value="memory">I forget it after studying</button><button data-value="basics">My basics are not strong enough</button><button data-value="time">I struggle to keep up with the pace</button><button data-value="confidence">I know it, but I lack confidence</button></div></div>
+<div class="pathway-step" data-step="3"><p class="section-kicker">YOUR ROUTINE</p><h2>How much time can you realistically study?</h2><p class="section-description">Nivora should build around your real schedule, not an imaginary perfect one.</p><div class="choice-grid" id="timeChoices"><button data-value="30">30 minutes a day</button><button data-value="60">1 hour a day</button><button data-value="90">1.5 hours a day</button><button data-value="120">2 hours a day</button><button data-value="180">3+ hours a day</button></div></div>
+<div class="pathway-step" data-step="4"><p class="section-kicker">YOUR TARGET</p><h2>When do you want to feel ready?</h2><p class="section-description">Give Nivora a target date so it can pace the pathway.</p><label class="date-input">Target date<input id="targetDate" type="date"></label><label class="pathway-notes">Anything else Nivora should know? <span>optional</span><textarea id="pathwayNotes" maxlength="400" placeholder="For example: I have an exam coming up and Accounting is my weakest subject."></textarea></label></div>
+<div class="pathway-actions"><button class="secondary-button" id="backButton" type="button">Back</button><button class="primary-button" id="nextButton" type="button">Continue →</button></div>
+</section>
+<section class="pathway-result hidden" id="resultCard"><div class="result-heading"><div><p class="section-kicker">YOUR PATHWAY</p><h2 id="resultTitle">Your plan is ready.</h2><p class="section-description" id="resultSummary"></p></div><button class="secondary-button" id="editPathButton" type="button">Retake</button></div><div id="planList" class="plan-list"></div><div class="pathway-insight"><strong>Nivora will keep adapting this.</strong><span>As you study, scores and attempts can change the order and intensity of your pathway.</span></div></section>
+</main>
+<footer><p>Nivora</p></footer>
+<script src="data/storage.js"></script><script src="app.js"></script><script src="pathway.js"></script>
+</body></html>
