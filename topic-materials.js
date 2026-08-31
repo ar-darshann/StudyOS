@@ -10,7 +10,58 @@
     function setTab(tab) { document.querySelectorAll(".topic-tab").forEach(button => { const active = button.dataset.topicTab === tab; button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active)); }); document.getElementById("materialsPanel")?.classList.toggle("hidden", tab !== "materials"); document.getElementById("chatPanel")?.classList.toggle("hidden", tab !== "chat"); if (tab === "chat") setTimeout(() => document.getElementById("topicChatInput")?.focus(), 80); }
     async function renderMaterials() { const list = document.getElementById("topicMaterialList"); const count = document.getElementById("materialCount"); if (!list) return; try { const items = await materials(); if (count) count.textContent = items.length; list.innerHTML = items.length ? "" : '<div class="topic-empty-materials"><div>▧</div><strong>No PDFs yet</strong><span>Upload your notes or let Nivo find study resources.</span></div>'; items.sort((a,b) => new Date(b.addedAt)-new Date(a.addedAt)).forEach(material => { const row=document.createElement("div"); row.className="topic-material-item large-item"; row.innerHTML=`<div class="material-file-icon">PDF</div><div class="material-file-info"><strong>${esc(material.name)}</strong><span>${material.source === "web" ? "Web resource" : "Your upload"}</span></div><div class="topic-material-actions"><button type="button" class="topic-material-open">Open</button><button type="button" class="topic-material-remove">Remove</button></div>`; row.querySelector(".topic-material-open").onclick=()=>{if(material.url)window.open(material.url,"_blank","noopener,noreferrer");else if(material.blob){const url=URL.createObjectURL(material.blob);window.open(url,"_blank","noopener,noreferrer");setTimeout(()=>URL.revokeObjectURL(url),60000);}}; row.querySelector(".topic-material-remove").onclick=async()=>{if(!confirm(`Remove "${material.name}" from this topic?`))return;await window.studyOSStorage.deleteMaterial(material.id);renderMaterials();};list.appendChild(row);}); } catch(error) { console.error("Could not load topic materials",error); list.innerHTML='<div class="topic-empty-materials"><strong>Materials could not be loaded.</strong><span>You can still upload a PDF or try again.</span></div>'; } }
     async function uploadPdfs() { const input=document.getElementById("topicPdfInput"); if(!input||!state.topic)return; for(const file of Array.from(input.files||[])){if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){alert("For now, Nivora accepts PDF files only.");continue;}try{await window.studyOSStorage.addMaterial({id:crypto.randomUUID(),subjectId:state.subjectId,topicId:state.topic.id,topicName:state.topic.name,name:file.name,type:"application/pdf",size:file.size,addedAt:new Date().toISOString(),source:"upload",blob:file});}catch(error){console.error(error);alert("This PDF could not be saved in this browser.");}}input.value="";renderMaterials(); }
-    async function findPdfs() { const results=document.getElementById("pdfSearchResults"); if(!results||!state.topic)return; results.classList.remove("hidden"); results.innerHTML='<div class="pdf-search-loading"><div class="nivo-spinner">N</div><strong>Nivo is finding the best PDFs…</strong><span>Searching and ranking resources for this topic.</span></div>'; try { const ctx=context(); if(!ctx.subject)throw new Error("Subject context is missing."); const response=await fetch(`/api/search-pdfs?subject=${encodeURIComponent(ctx.subject.name)}&topic=${encodeURIComponent(state.topic.name)}`); const data=await response.json(); if(!response.ok)throw new Error(data.error||"Search unavailable"); if(!Array.isArray(data.results)||!data.results.length)throw new Error("No suitable PDF resources were found."); results.innerHTML='<div class="pdf-search-heading"><div><strong>Top PDF resources</strong><span>Nivo ranked these for relevance and source quality.</span></div></div>'; data.results.slice(0,5).forEach((item,index)=>{const card=document.createElement("article");card.className="pdf-result-card";card.innerHTML=`<div class="pdf-rank">${index+1}</div><div class="pdf-result-info"><strong>${esc(item.title||"PDF resource")}</strong><span>${esc(item.source||"Web")}</span><p>${esc(item.reason||"Relevant study resource for this topic.")}</p></div><button type="button" class="pdf-add-result">Add</button>`;card.querySelector(".pdf-add-result").onclick=async()=>{await window.studyOSStorage.addMaterial({id:crypto.randomUUID(),subjectId:state.subjectId,topicId:state.topic.id,topicName:state.topic.name,name:item.title||"Web PDF",type:"application/pdf",size:0,addedAt:new Date().toISOString(),source:"web",url:item.url});card.querySelector(".pdf-add-result").textContent="Added";card.querySelector(".pdf-add-result").disabled=true;renderMaterials();};results.appendChild(card);}); } catch(error) { results.innerHTML=`<div class="pdf-search-error"><strong>PDF search is not available yet.</strong><span>${esc(error.message)}</span><small>Web PDF discovery is not configured on this deployment yet.</small></div>`; } }
+
+    function showPdfError(message, canRetry = true) {
+        const results = document.getElementById("pdfSearchResults");
+        if (!results) return;
+        results.innerHTML = `<div class="pdf-search-error"><div class="pdf-error-icon">!</div><strong>${esc(message)}</strong><span>Nivo couldn't return a usable PDF list for this topic.</span>${canRetry ? '<button type="button" class="secondary-button pdf-retry">Try again</button>' : ''}</div>`;
+        results.querySelector(".pdf-retry")?.addEventListener("click", findPdfs);
+    }
+
+    async function findPdfs() {
+        const results=document.getElementById("pdfSearchResults");
+        if(!results||!state.topic)return;
+        results.classList.remove("hidden");
+        results.innerHTML='<div class="pdf-search-loading"><div class="nivo-spinner">N</div><strong>Nivo is finding the best PDFs…</strong><span>Searching the web and ranking resources for this exact topic.</span></div>';
+        try {
+            const ctx=context();
+            if(!ctx.subject) throw new Error("Subject context is missing.");
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 25000);
+            let response;
+            try {
+                response=await fetch(`/api/search-pdfs?subject=${encodeURIComponent(ctx.subject.name)}&topic=${encodeURIComponent(state.topic.name)}`,{signal:controller.signal,headers:{"Accept":"application/json"}});
+            } finally { clearTimeout(timeout); }
+            let data={};
+            try { data=await response.json(); } catch { throw new Error("The search service returned an invalid response."); }
+            if(!response.ok) throw new Error(data.error||`Search failed (${response.status}).`);
+            if(!Array.isArray(data.results)||!data.results.length){
+                showPdfError(data.message||"No direct PDF resources were found for this topic.", true);
+                return;
+            }
+            results.innerHTML='<div class="pdf-search-heading"><div><strong>Top PDF resources</strong><span>Nivo ranked these for topic relevance and source quality.</span></div><button type="button" class="text-button pdf-refresh">Refresh</button></div>';
+            results.querySelector(".pdf-refresh")?.addEventListener("click",findPdfs);
+            data.results.slice(0,5).forEach((item,index)=>{
+                const card=document.createElement("article");
+                card.className="pdf-result-card";
+                card.innerHTML=`<div class="pdf-rank">${index+1}</div><div class="pdf-result-info"><strong>${esc(item.title||"PDF resource")}</strong><span>${esc(item.source||"Web")}</span><p>${esc(item.reason||"Relevant study resource for this topic.")}</p></div><button type="button" class="pdf-add-result">Add</button>`;
+                card.querySelector(".pdf-add-result").onclick=async()=>{
+                    const button=card.querySelector(".pdf-add-result");
+                    button.disabled=true; button.textContent="Adding…";
+                    try {
+                        await window.studyOSStorage.addMaterial({id:crypto.randomUUID(),subjectId:state.subjectId,topicId:state.topic.id,topicName:state.topic.name,name:item.title||"Web PDF",type:"application/pdf",size:0,addedAt:new Date().toISOString(),source:"web",url:item.url});
+                        button.textContent="Added";
+                        renderMaterials();
+                    } catch(error) { button.disabled=false; button.textContent="Add"; alert("This PDF could not be added."); }
+                };
+                results.appendChild(card);
+            });
+        } catch(error) {
+            console.error("Nivora PDF search request failed",error);
+            showPdfError(error.name === "AbortError" ? "The PDF search took too long to respond." : (error.message||"PDF search failed."), true);
+        }
+    }
+
     async function sendChat(event) { event.preventDefault(); const input=document.getElementById("topicChatInput"),messages=document.getElementById("chatMessages"),text=input?.value.trim(); if(!text||!state.topic||!messages)return; const user=document.createElement("div");user.className="chat-message user";user.innerHTML=`<strong>You</strong><p>${esc(text)}</p>`;messages.appendChild(user);input.value="";const loading=document.createElement("div");loading.className="chat-message assistant typing";loading.innerHTML='<strong>Nivo</strong><p>Thinking…</p>';messages.appendChild(loading);messages.scrollTop=messages.scrollHeight;try{const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject:context().subject?.name||"",topic:state.topic.name,message:text})});const data=await response.json();if(!response.ok)throw new Error(data.error||"Nivo could not respond.");loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(data.reply||"I couldn't generate a response.")}</p>`;}catch(error){loading.innerHTML=`<strong>Nivo</strong><p>${esc(error.message)}</p>`;}messages.scrollTop=messages.scrollHeight; }
     function enhanceTopics() { const list=document.getElementById("subjectTopicsList"),ctx=context(); if(!list||!ctx.subject)return; Array.from(list.querySelectorAll(".subject-topic-row")).forEach((row,index)=>{const topic=ctx.subject.topics[index];if(!topic||row.dataset.workspaceReady)return;ensureTopicId(ctx.subject,index,ctx.subjectId);row.dataset.workspaceReady="true";row.setAttribute("role","button");row.setAttribute("tabindex","0");row.addEventListener("click",event=>{if(event.target.closest("a,button,input"))return;openWorkspace(topic,ctx.subjectId);});row.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openWorkspace(topic,ctx.subjectId);}});}); }
     window.NivoraTopicWorkspace = { open: openWorkspace, close: closeWorkspace };
