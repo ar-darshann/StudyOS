@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Subject | Nivora</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="app-enhancements.css">
-<link rel="stylesheet" href="topic-materials.css">
-<link rel="stylesheet" href="subject-reference.css">
-<link rel="stylesheet" href="topic-modal-center.css">
-<link rel="stylesheet" href="subject-warm.css">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="app-enhancements.css"><link rel="stylesheet" href="topic-materials.css"><link rel="stylesheet" href="subject-reference.css"><link rel="stylesheet" href="topic-modal-center.css"><link rel="stylesheet" href="subject-warm.css">
 </head>
 <body class="app-page nivora-subject-page">
 <nav class="navbar">
   <a href="dashboard.html" class="logo"><span class="nivora-leaf">✦</span> Nivora</a>
-  <div class="nav-links"><a href="dashboard.html">Dashboard</a><a href="subjectui.html" class="active">Subjects</a><a href="#" class="disabled-link">Progress</a></div>
+  <div class="nav-links"><a href="dashboard.html">Dashboard</a><a href="subjectui.html" class="active">Subjects</a><a href="pathway.html">Learning Path</a><a href="#" class="disabled-link">Progress</a></div>
   <div class="nav-actions"><button class="theme-toggle" id="themeToggle"><span id="themeIcon">☀</span></button><div class="profile-wrap"><button class="profile-button" id="profileButton" aria-label="Open profile">—</button><div class="profile-menu hidden" id="profileMenu"><div class="profile-menu-name" id="profileMenuName">Profile</div><button id="setupAgainButton">Study setup</button><button id="logoutButton" class="logout-button">Log out</button></div></div></div>
 </nav>
 <div class="subject-shell">
   <aside class="subject-sidebar">
     <a class="sidebar-subject-card" href="subjectui.html"><strong id="sidebarSubjectName">Subject</strong><span id="sidebarTopicCount">0 topics</span><i></i></a>
-    <nav class="sidebar-nav"><a href="dashboard.html">⌂ <span>Overview</span></a><a class="active" href="subjectui.html">▦ <span>Subjects</span></a><a href="#" class="disabled-link">↗ <span>Progress</span></a><a href="#" class="disabled-link">◷ <span>Study Time</span></a><a href="#" class="disabled-link">⚙ <span>Settings</span></a></nav>
+    <nav class="sidebar-nav"><a href="dashboard.html">⌂ <span>Overview</span></a><a class="active" href="subjectui.html">▦ <span>Subjects</span></a><a href="pathway.html">✦ <span>Learning Path</span></a><a href="#" class="disabled-link">↗ <span>Progress</span></a><a href="#" class="disabled-link">◷ <span>Study Time</span></a><a href="#" class="disabled-link">⚙ <span>Settings</span></a></nav>
     <button class="sidebar-logout" id="sidebarLogout">↪ <span>Logout</span></button>
   </aside>
   <main class="subject-main">
@@ -31,17 +25,8 @@
   </main>
 </div>
 <div class="modal hidden" id="topicModal" aria-hidden="true">
-  <div class="modal-backdrop" data-close-topic></div>
-  <section class="topic-workspace" role="dialog" aria-modal="true" aria-labelledby="topicWorkspaceTitle">
-    <header class="topic-workspace-header"><div class="topic-title-wrap"><div class="topic-modal-icon">▧</div><div><h2 id="topicWorkspaceTitle">Topic</h2><p id="topicWorkspaceMeta" class="topic-workspace-meta">Not started · 0% complete</p></div></div><button class="modal-close" id="closeTopicWorkspace" aria-label="Close">×</button></header>
-    <div class="topic-tabs" role="tablist"><button class="topic-tab active" data-topic-tab="materials" role="tab" aria-selected="true">▧ <span>Materials</span></button><button class="topic-tab" data-topic-tab="chat" role="tab" aria-selected="false">◌ <span>Chat with AI</span></button></div>
-    <div class="topic-panel" id="materialsPanel"><div class="material-actions-grid"><button type="button" class="material-action-card" id="uploadTopicPdf"><span class="material-action-icon upload">↑</span><span><strong>Upload your PDF</strong><small>Add your own study materials</small></span><span class="material-action-arrow">→</span></button><button type="button" class="material-action-card" id="findTopicPdfs"><span class="material-action-icon search">⌕</span><span><strong>Find PDF materials</strong><small>Nivo finds relevant resources</small></span><span class="material-action-arrow">→</span></button></div><input id="topicPdfInput" type="file" accept="application/pdf,.pdf" multiple hidden><div class="topic-results-header"><span>Your materials</span><span id="materialCount">0</span></div><div id="topicMaterialList" class="topic-material-list large"></div><div id="pdfSearchResults" class="pdf-search-results hidden"></div></div>
-    <div class="topic-panel hidden" id="chatPanel"><div class="chat-intro"><div class="nivo-mark">N</div><h3>Hi! I'm Nivo AI</h3><p>Ask me anything about this topic. I can help you understand, explain and solve doubts.</p></div><div id="chatMessages" class="chat-messages"><div class="chat-message assistant"><strong>Nivo</strong><p>Hi! Ask me anything about this topic.</p></div></div><form id="topicChatForm" class="chat-form"><input id="topicChatInput" autocomplete="off" placeholder="Ask anything..." maxlength="1200"><button type="submit" aria-label="Send">→</button></form><p class="chat-disclaimer">Nivo AI can make mistakes. Verify important information.</p></div>
-  </section>
+  <div class="modal-backdrop" data-close-topic></div><section class="topic-workspace" role="dialog" aria-modal="true" aria-labelledby="topicWorkspaceTitle"><header class="topic-workspace-header"><div class="topic-title-wrap"><div class="topic-modal-icon">▧</div><div><h2 id="topicWorkspaceTitle">Topic</h2><p id="topicWorkspaceMeta" class="topic-workspace-meta">Not started · 0% complete</p></div></div><button class="modal-close" id="closeTopicWorkspace" aria-label="Close">×</button></header><div class="topic-tabs" role="tablist"><button class="topic-tab active" data-topic-tab="materials" role="tab" aria-selected="true">▧ <span>Materials</span></button><button class="topic-tab" data-topic-tab="chat" role="tab" aria-selected="false">◌ <span>Chat with AI</span></button></div><div class="topic-panel" id="materialsPanel"><div class="material-actions-grid"><button type="button" class="material-action-card" id="uploadTopicPdf"><span class="material-action-icon upload">↑</span><span><strong>Upload your PDF</strong><small>Add your own study materials</small></span><span class="material-action-arrow">→</span></button><button type="button" class="material-action-card" id="findTopicPdfs"><span class="material-action-icon search">⌕</span><span><strong>Find PDF materials</strong><small>Nivo finds relevant resources</small></span><span class="material-action-arrow">→</span></button></div><input id="topicPdfInput" type="file" accept="application/pdf,.pdf" multiple hidden><div class="topic-results-header"><span>Your materials</span><span id="materialCount">0</span></div><div id="topicMaterialList" class="topic-material-list large"></div><div id="pdfSearchResults" class="pdf-search-results hidden"></div></div><div class="topic-panel hidden" id="chatPanel"><div class="chat-intro"><div class="nivo-mark">N</div><h3>Hi! I'm Nivo AI</h3><p>Ask me anything about this topic. I can help you understand, explain and solve doubts.</p></div><div id="chatMessages" class="chat-messages"><div class="chat-message assistant"><strong>Nivo</strong><p>Hi! Ask me anything about this topic.</p></div></div><form id="topicChatForm" class="chat-form"><input id="topicChatInput" autocomplete="off" placeholder="Ask anything..." maxlength="1200"><button type="submit" aria-label="Send">→</button></form><p class="chat-disclaimer">Nivo AI can make mistakes. Verify important information.</p></div></section>
 </div>
 <div class="modal hidden" id="topicCreateModal" aria-hidden="true"><div class="modal-backdrop" data-close-create-topic></div><section class="modal-card"><div class="modal-header"><div><p class="section-kicker">NEW TOPIC</p><h2>Add a topic</h2></div><button class="modal-close" id="closeTopicModal">×</button></div><form id="topicForm"><label>Topic name<input id="topicNameInput" type="text" maxlength="80" placeholder="e.g. Chapter 3 — Depreciation" required></label><div class="form-actions"><button type="button" class="secondary-button" id="cancelTopicButton">Cancel</button><button class="primary-button" type="submit">Add topic</button></div></form></section></div>
-<footer><p>Nivora</p></footer>
-<script src="data/storage.js"></script>
-<script src="subject-page.js"></script>
-<script src="topic-materials.js"></script>
+<footer><p>Nivora</p></footer><script src="data/storage.js"></script><script src="subject-page.js"></script><script src="topic-materials.js"></script>
 </body></html>
