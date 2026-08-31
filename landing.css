@@ -1,11 +1,22 @@
-/* StudyOS public landing page */
+/* Nivora public landing page — warm medium palette */
+:root {
+    --landing-bg: #24221f;
+    --landing-surface: #302d29;
+    --landing-surface-2: #39352f;
+    --landing-text: #eee7dc;
+    --landing-muted: #aaa095;
+    --landing-border: #4a443c;
+    --landing-accent: #c77b5b;
+    --landing-accent-soft: #d39a7f;
+    --landing-sage: #829b82;
+}
 
 .landing-page {
     overflow: hidden;
     position: relative;
     min-height: 100vh;
-    background: #050505;
-    color: #f5f5f5;
+    background: var(--landing-bg);
+    color: var(--landing-text);
 }
 
 .landing-page::before {
@@ -14,8 +25,8 @@
     inset: 0;
     pointer-events: none;
     background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+        linear-gradient(rgba(238,231,220,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(238,231,220,.018) 1px, transparent 1px);
     background-size: 64px 64px;
     mask-image: radial-gradient(circle at center, black, transparent 75%);
 }
@@ -31,7 +42,7 @@
 }
 
 .landing-logo {
-    color: #f5f5f5;
+    color: var(--landing-text);
     text-decoration: none;
     font-size: 23px;
     font-weight: 800;
@@ -40,7 +51,7 @@
 
 .landing-logo span,
 .landing-hero h1 span {
-    color: #20c76a;
+    color: var(--landing-sage);
 }
 
 .landing-actions {
@@ -53,28 +64,28 @@
 .landing-cta {
     border: 0;
     background: transparent;
-    color: #f5f5f5;
+    color: var(--landing-text);
     padding: 10px 13px;
     font-size: 13px;
     font-weight: 700;
 }
 
 .landing-link {
-    color: #8b8b8b;
+    color: var(--landing-muted);
 }
 
 .landing-link:hover {
-    color: #f5f5f5;
+    color: var(--landing-text);
 }
 
 .landing-cta {
-    border: 1px solid #303030;
-    background: #0b0b0b;
-    border-radius: 7px;
+    border: 1px solid var(--landing-border);
+    background: var(--landing-surface);
+    border-radius: 9px;
 }
 
 .landing-cta:hover {
-    border-color: #f5f5f5;
+    border-color: var(--landing-accent-soft);
 }
 
 .landing-main {
@@ -92,7 +103,7 @@
 }
 
 .landing-kicker {
-    color: #8b8b8b;
+    color: var(--landing-muted);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -109,17 +120,17 @@
 .landing-description {
     max-width: 500px;
     margin: 28px auto 0;
-    color: #8b8b8b;
+    color: var(--landing-muted);
     font-size: 16px;
     line-height: 1.7;
 }
 
 .landing-start {
     margin-top: 32px;
-    border: 1px solid #f5f5f5;
-    background: #f5f5f5;
-    color: #050505;
-    border-radius: 8px;
+    border: 1px solid var(--landing-accent);
+    background: var(--landing-accent);
+    color: #fff3e9;
+    border-radius: 10px;
     padding: 13px 18px;
     font-size: 13px;
     font-weight: 800;
@@ -130,7 +141,8 @@
 }
 
 .landing-start:hover {
-    opacity: .88;
+    background: var(--landing-accent-soft);
+    border-color: var(--landing-accent-soft);
 }
 
 .landing-glow {
@@ -140,7 +152,7 @@
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(32,199,106,.08), transparent 68%);
+    background: radial-gradient(circle, rgba(199,123,91,.10), transparent 68%);
     filter: blur(12px);
     z-index: 0;
 }
@@ -154,7 +166,7 @@
 .landing-modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,.7);
+    background: rgba(25,23,21,.76);
     backdrop-filter: blur(7px);
 }
 
@@ -163,9 +175,10 @@
     width: min(440px, calc(100% - 32px));
     margin: 12vh auto 0;
     padding: 30px;
-    background: #0b0b0b;
-    border: 1px solid #303030;
-    box-shadow: 0 30px 100px rgba(0,0,0,.45);
+    background: var(--landing-surface);
+    border: 1px solid var(--landing-border);
+    border-radius: 16px;
+    box-shadow: 0 30px 100px rgba(0,0,0,.32);
 }
 
 .landing-modal-heading {
@@ -185,7 +198,7 @@
     height: 32px;
     border: 0;
     background: transparent;
-    color: #8b8b8b;
+    color: var(--landing-muted);
     font-size: 26px;
 }
 
@@ -199,61 +212,52 @@
     display: flex;
     flex-direction: column;
     gap: 7px;
-    color: #f5f5f5;
+    color: var(--landing-text);
     font-size: 12px;
     font-weight: 700;
 }
 
-.landing-modal-card input {
+.landing-modal-card input,
+.landing-modal-card select {
     width: 100%;
     padding: 12px;
-    border: 1px solid #303030;
-    border-radius: 6px;
-    background: #050505;
-    color: #f5f5f5;
+    border: 1px solid var(--landing-border);
+    border-radius: 8px;
+    background: var(--landing-bg);
+    color: var(--landing-text);
     outline: none;
 }
 
-.landing-modal-card input:focus {
-    border-color: #20c76a;
+.landing-modal-card input:focus,
+.landing-modal-card select:focus {
+    border-color: var(--landing-accent-soft);
 }
 
 .landing-form-submit {
     min-height: 44px;
-    border: 1px solid #f5f5f5;
-    background: #f5f5f5;
-    color: #050505;
-    border-radius: 7px;
+    border: 1px solid var(--landing-accent);
+    background: var(--landing-accent);
+    color: #fff3e9;
+    border-radius: 9px;
     font-size: 13px;
     font-weight: 800;
 }
 
+.landing-form-submit:hover {
+    background: var(--landing-accent-soft);
+}
+
 .landing-note {
     margin-top: 18px;
-    color: #8b8b8b;
+    color: var(--landing-muted);
     font-size: 11px;
     line-height: 1.6;
 }
 
 @media (max-width: 520px) {
-    .landing-nav {
-        padding: 0 5%;
-    }
-
-    .landing-actions {
-        gap: 0;
-    }
-
-    .landing-link,
-    .landing-cta {
-        padding: 9px 8px;
-    }
-
-    .landing-hero h1 {
-        letter-spacing: -4px;
-    }
-
-    .landing-description {
-        font-size: 14px;
-    }
+    .landing-nav { padding: 0 5%; }
+    .landing-actions { gap: 0; }
+    .landing-link, .landing-cta { padding: 9px 8px; }
+    .landing-hero h1 { letter-spacing: -4px; }
+    .landing-description { font-size: 14px; }
 }
