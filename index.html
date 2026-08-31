@@ -10,25 +10,61 @@
 <body class="landing-page">
 <div class="landing-glow" id="landingGlow"></div>
 <header class="landing-nav">
-<a href="index.html" class="landing-logo">Nivora</a>
-<div class="landing-actions"><button class="landing-link" id="signInButton">Sign in</button><button class="landing-cta" id="createAccountButton">Create account</button></div>
+<a href="index.html" class="landing-logo"><span class="logo-mark">N</span><span>Nivora</span></a>
+<div class="landing-actions">
+<button class="landing-theme" id="landingThemeButton" type="button" aria-label="Toggle dark mode"><span id="themeIcon">☾</span></button>
+<button class="landing-link" id="signInButton">Sign in</button>
+<button class="landing-cta" id="createAccountButton">Get started</button>
+</div>
 </header>
-<main class="landing-main"><section class="landing-hero"><p class="landing-kicker">YOUR LEARNING SPACE</p><h1>Nivora</h1><p class="landing-description">A simple place to organize your curriculum, subjects, topics, study material, and progress.</p><button class="landing-start" id="heroCreateButton">Create your account <span>→</span></button></section></main>
+
+<main class="landing-main">
+<section class="landing-hero">
+<div class="landing-copy">
+<p class="landing-kicker"><span class="kicker-dot"></span> YOUR LEARNING SPACE</p>
+<h1>Study with a little more <em>clarity.</em></h1>
+<p class="landing-description">Nivora turns your curriculum into a calm, organized workspace — subjects, topics, materials, progress, and an AI that actually understands what you're studying.</p>
+<div class="landing-buttons"><button class="landing-start" id="heroCreateButton">Create your workspace <span>→</span></button><button class="landing-secondary" id="heroSignInButton">I already have an account</button></div>
+<div class="landing-trust"><span>Organize</span><i></i><span>Understand</span><i></i><span>Learn</span></div>
+</div>
+
+<div class="landing-preview" aria-hidden="true">
+<div class="preview-window">
+<div class="preview-top"><div class="preview-brand"><span>N</span> Nivora</div><div class="preview-pill">My learning</div></div>
+<div class="preview-content">
+<div class="preview-welcome"><small>GOOD MORNING</small><strong>Your learning, in one place.</strong><span>Keep moving. One topic at a time.</span></div>
+<div class="preview-grid">
+<div class="preview-card preview-progress"><div class="preview-card-head"><span>Overall progress</span><b>42%</b></div><div class="preview-bar"><span></span></div><small>3 of 7 topics started</small></div>
+<div class="preview-card preview-topic"><small>UP NEXT</small><strong>Demand & Supply</strong><span>Economics · Topic 4</span><button>Continue →</button></div>
+<div class="preview-card preview-subject"><small>YOUR SUBJECTS</small><div><b>Economics</b><span>4 topics</span></div><div><b>Accounting</b><span>7 topics</span></div><div><b>Business Law</b><span>5 topics</span></div></div>
+</div>
+</div>
+</div>
+<div class="preview-shadow"></div>
+</div>
+</section>
+</main>
+
 <div class="landing-modal hidden" id="accountModal" aria-hidden="true"><div class="landing-modal-backdrop" data-close-account></div><section class="landing-modal-card" role="dialog" aria-modal="true"><div class="landing-modal-heading"><div><p class="landing-kicker">GET STARTED</p><h2>Create your account</h2></div><button class="landing-modal-close" id="closeAccountModal">×</button></div><form id="accountForm"><label>Full name<input id="accountName" type="text" maxlength="60" autocomplete="name" required></label><label>Gender<select id="accountGender" required><option value="" selected disabled>Select gender</option><option value="male">Male</option><option value="female">Female</option><option value="non-binary">Non-binary</option><option value="prefer-not-to-say">Prefer not to say</option></select></label><label>Email<input id="accountEmail" type="email" autocomplete="email" required></label><label>Password<input id="accountPassword" type="password" minlength="8" autocomplete="new-password" required></label><p class="form-error" id="accountError"></p><button type="submit" class="landing-form-submit">Create account</button></form><p class="landing-note">You'll continue into Nivora's setup screen, where you can organize your curriculum and add your study material.</p></section></div>
 <div class="landing-modal hidden" id="signInModal" aria-hidden="true"><div class="landing-modal-backdrop" data-close-signin></div><section class="landing-modal-card" role="dialog" aria-modal="true"><div class="landing-modal-heading"><div><p class="landing-kicker">WELCOME BACK</p><h2>Sign in</h2></div><button class="landing-modal-close" id="closeSignInModal">×</button></div><form id="signInForm"><label>Email<input id="signInEmail" type="email" autocomplete="email" required></label><label>Password<input id="signInPassword" type="password" autocomplete="current-password" required></label><p class="form-error" id="signInError"></p><button type="submit" class="landing-form-submit">Sign in</button></form></section></div>
+
 <script src="data/storage.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded",function(){
-const K="studyOS-account",am=document.getElementById("accountModal"),sm=document.getElementById("signInModal"),gl=document.getElementById("landingGlow");
+const K="studyOS-account",THEME="nivora-theme",am=document.getElementById("accountModal"),sm=document.getElementById("signInModal"),gl=document.getElementById("landingGlow"),themeButton=document.getElementById("landingThemeButton"),themeIcon=document.getElementById("themeIcon");
 function acc(){try{return JSON.parse(localStorage.getItem(K))}catch{return null}}
+function applyTheme(theme){document.documentElement.dataset.theme=theme;document.body.dataset.theme=theme;themeIcon.textContent=theme==="dark"?"☀":"☾";themeButton.setAttribute("aria-label",theme==="dark"?"Switch to light mode":"Switch to dark mode")}
+const savedTheme=localStorage.getItem(THEME);applyTheme(savedTheme==="dark"?"dark":"light");
+themeButton.onclick=()=>{const next=document.body.dataset.theme==="dark"?"light":"dark";localStorage.setItem(THEME,next);applyTheme(next)};
 function open(m){m.classList.remove("hidden");m.setAttribute("aria-hidden","false");document.body.classList.add("modal-open")}
 function close(m){m.classList.add("hidden");m.setAttribute("aria-hidden","true");if(am.classList.contains("hidden")&&sm.classList.contains("hidden"))document.body.classList.remove("modal-open")}
 async function hash(p){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(p));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
 const existing=acc();if(existing&&existing.passwordHash){location.replace("dashboard.html");return}
-document.getElementById("createAccountButton").onclick=()=>open(am);document.getElementById("heroCreateButton").onclick=()=>open(am);document.getElementById("signInButton").onclick=()=>open(sm);document.getElementById("closeAccountModal").onclick=()=>close(am);document.getElementById("closeSignInModal").onclick=()=>close(sm);document.querySelector("[data-close-account]").onclick=()=>close(am);document.querySelector("[data-close-signin]").onclick=()=>close(sm);
+document.getElementById("createAccountButton").onclick=()=>open(am);document.getElementById("heroCreateButton").onclick=()=>open(am);document.getElementById("signInButton").onclick=()=>open(sm);document.getElementById("heroSignInButton").onclick=()=>open(sm);document.getElementById("closeAccountModal").onclick=()=>close(am);document.getElementById("closeSignInModal").onclick=()=>close(sm);document.querySelector("[data-close-account]").onclick=()=>close(am);document.querySelector("[data-close-signin]").onclick=()=>close(sm);
 document.getElementById("accountForm").onsubmit=async e=>{e.preventDefault();const name=document.getElementById("accountName").value.trim(),gender=document.getElementById("accountGender").value,email=document.getElementById("accountEmail").value.trim().toLowerCase(),password=document.getElementById("accountPassword").value,error=document.getElementById("accountError");if(password.length<8){error.textContent="Password must be at least 8 characters.";return}if(acc()&&acc().passwordHash){error.textContent="An account already exists. Please sign in.";return}localStorage.setItem(K,JSON.stringify({name,gender,email,passwordHash:await hash(password),createdAt:new Date().toISOString()}));location.href="setup.html"};
 document.getElementById("signInForm").onsubmit=async e=>{e.preventDefault();const email=document.getElementById("signInEmail").value.trim().toLowerCase(),password=document.getElementById("signInPassword").value,error=document.getElementById("signInError"),a=acc();if(!a||!a.passwordHash){error.textContent="No account was found in this browser. Create an account first.";return}if(a.email!==email||a.passwordHash!==await hash(password)){error.textContent="Email or password is incorrect.";return}location.href="dashboard.html"};
 document.addEventListener("mousemove",e=>{if(gl){gl.style.left=`${e.clientX}px`;gl.style.top=`${e.clientY}px`}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!am.classList.contains("hidden"))close(am);if(!sm.classList.contains("hidden"))close(sm)}});
 });
 </script>
 </body>
