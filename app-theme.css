@@ -1,27 +1,27 @@
 /* Nivora unified visual system: warm, calm, and intentionally uncluttered. */
 :root{
-  --background:#24231F;
-  --surface:#2D2B26;
-  --surface-2:#37342D;
-  --border:#49443A;
-  --border-strong:#5A5246;
-  --text:#F1EDE5;
-  --muted:#B5ADA0;
-  --accent:#C9795C;
-  --danger:#D06A68;
+  --background:#332824;
+  --surface:#765548;
+  --surface-2:#8C6A5B;
+  --border:#9A7A6C;
+  --border-strong:#B08D7D;
+  --text:#F4EEE7;
+  --muted:#D3C2B8;
+  --accent:#B98282;
+  --danger:#C46F6F;
   --success:#9AAA8B;
 }
 body.light{
-  --background:#EDE5D8;
-  --surface:#F7F2E9;
-  --surface-2:#E3D9C9;
-  --border:#CEC1AE;
-  --border-strong:#B7A894;
-  --text:#34332E;
-  --muted:#756E64;
-  --accent:#B9684E;
-  --danger:#B95150;
-  --success:#819777;
+  --background:#F1E9DF;
+  --surface:#FAF5EF;
+  --surface-2:#E7D8CF;
+  --border:#D2BFB4;
+  --border-strong:#BDA69A;
+  --text:#332824;
+  --muted:#78675F;
+  --accent:#B98282;
+  --danger:#A95F5F;
+  --success:#718873;
 }
 
 /* Consistent palette */
@@ -29,12 +29,12 @@ body{background:var(--background);color:var(--text)}
 .navbar{background:color-mix(in srgb,var(--background) 94%,transparent);border-color:var(--border)}
 .logo,.nav-links a.active,.nav-links a:hover,.eyebrow,.section-kicker{color:var(--accent)}
 .theme-toggle,.profile-button{background:var(--surface);border-color:var(--border);color:var(--text)}
-.primary-button{background:var(--accent);border-color:var(--accent);color:#FFF9F2}
+.primary-button{background:var(--accent);border-color:var(--accent);color:#FFF9F6}
 .primary-button:hover{background:color-mix(in srgb,var(--accent) 88%,#000);opacity:1}
 .secondary-button{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
 .secondary-button:hover{background:var(--surface-2);border-color:var(--accent)}
 .focus-panel,.subjects-panel,.simple-section,.subject-card,.modal-card,.setup-card,.setup-topics-card{background:var(--surface);border-color:var(--border)}
-.subject-icon,.subject-main-icon{background:var(--surface-2);border-color:var(--border-strong);color:var(--success)}
+.subject-icon,.subject-main-icon{background:var(--surface-2);border-color:var(--border-strong);color:var(--accent)}
 .progress-track{background:var(--surface-2)}
 .progress-value{background:var(--success)}
 footer{background:var(--background);border-color:var(--border)}
