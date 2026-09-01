@@ -1,0 +1,25 @@
+/* Temporary palette test — intentionally very different so deployment changes are unmistakable. */
+:root{
+  --landing-bg:#101827;
+  --landing-surface:#182338;
+  --landing-surface-2:#243451;
+  --landing-text:#f3f7ff;
+  --landing-muted:#aebbd0;
+  --landing-border:#344764;
+  --landing-accent:#5aa9ff;
+  --landing-accent-hover:#79baff;
+  --landing-sage:#6ee7c8;
+  --landing-shadow:rgba(0,0,0,.38)
+}
+body.landing-page[data-theme="dark"]{
+  --landing-bg:#080d18;
+  --landing-surface:#111a2b;
+  --landing-surface-2:#1b2a43;
+  --landing-text:#f4f8ff;
+  --landing-muted:#9eacc2;
+  --landing-border:#2d405f;
+  --landing-accent:#66b0ff;
+  --landing-accent-hover:#8bc4ff;
+  --landing-sage:#68e0c1;
+  --landing-shadow:rgba(0,0,0,.5)
+}
