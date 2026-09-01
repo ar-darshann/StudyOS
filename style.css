@@ -33,7 +33,7 @@ a { color: inherit; }
 .hidden { display: none !important; }
 .disabled-link { opacity: .45; pointer-events: none; }
 .navbar { height: 68px; padding: 0 5.5%; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--background) 94%, transparent); backdrop-filter: blur(12px); }
-.logo { text-decoration: none; font-size: 23px; font-weight: 800; letter-spacing: -1px; }
+.logo { text-decoration: none; font-size: 23px; font-weight: 800; letter-spacing: -1px; color: var(--text); }
 .logo span { color: var(--accent); }
 .nav-links { display: flex; gap: 30px; }
 .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .15s ease; }
@@ -92,7 +92,7 @@ a { color: inherit; }
 .subject-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
 .subject-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 .subject-card-header > span { color: var(--muted); font-size: 11px; }
-.subject-icon,.subject-main-icon { display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--surface-2); color: #A8B39A; font-weight: 800; }
+.subject-icon,.subject-main-icon { display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--surface-2); color: var(--accent); font-weight: 800; }
 .subject-icon { width: 42px; height: 42px; font-size: 18px; }
 .subject-main-icon { width: 64px; height: 64px; font-size: 22px; }
 .subject-card h2 { font-size: 23px; letter-spacing: -.6px; }
@@ -146,9 +146,12 @@ footer { border-top: 1px solid var(--border); color: var(--muted); padding: 22px
 .subject-topic-row { gap: 12px; }
 }
 
-/* Theme control: dark is the default; the existing header toggle switches body.light and persists the choice. */
 body.light .theme-toggle { background:#F7F2E9; color:#34332E; border-color:#CEC1AE; }
 body:not(.light) .theme-toggle { background:#2D2B26; color:#F1EDE5; border-color:#49443A; }
 body.light .primary-button { background:#B9684E; border-color:#B9684E; }
 body:not(.light) .primary-button { background:#C9795C; border-color:#C9795C; }
 body.light .progress-value,body:not(.light) .progress-value { background:#9AAA8B; }
+
+/* Unified Nivora brand treatment: the top-left wordmark uses the terracotta accent, never sage. */
+.logo { color: var(--accent) !important; }
+.logo span { color: var(--accent) !important; }
