@@ -4,37 +4,24 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
 
 export async function extractCurriculumText(file) {
     const name = file.name.toLowerCase();
-
     if (name.endsWith(".pdf")) {
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
         let text = "";
-
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
             const page = await pdf.getPage(pageNumber);
             const content = await page.getTextContent();
             text += content.items.map(item => item.str || "").join(" ") + "\n";
         }
-
         return text.trim();
     }
-
     return (await file.text()).trim();
 }
 
 function clean(value) {
-    return String(value || "")
-        .replace(/[•·▪◦]/g, " ")
-        .replace(/\s+/g, " ")
-        .replace(/^[-–—:|]+\s*/, "")
-        .replace(/\s+[-–—:|]+\s*$/, "")
-        .trim();
+    return String(value || "").replace(/[•·▪◦]/g, " ").replace(/\s+/g, " ").replace(/^[-–—:|]+\s*/, "").replace(/\s+[-–—:|]+\s*$/, "").trim();
 }
-
-function normalise(value) {
-    return clean(value).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-}
-
+function normalise(value) { return clean(value).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 function looksLikeSubject(line) {
     const value = clean(line);
     if (!value || value.length < 3 || value.length > 90) return false;
@@ -46,12 +33,7 @@ function looksLikeSubject(line) {
     if (numbered) return numbered[2].length >= 3 && !/^(unit|module|chapter|topic)\b/i.test(numbered[2]);
     return /^[A-Z][A-Za-z0-9&'(),/ -]{2,85}$/.test(value) && !/[.!?]$/.test(value);
 }
-
-function subjectNameFromLine(line) {
-    const match = clean(line).match(/^\s*\d{1,2}[.)]\s+(.+)$/);
-    return clean(match ? match[1] : line);
-}
-
+function subjectNameFromLine(line) { const match = clean(line).match(/^\s*\d{1,2}[.)]\s+(.+)$/); return clean(match ? match[1] : line); }
 function looksLikeTopic(line) {
     const value = clean(line);
     if (!value || value.length < 3 || value.length > 120) return false;
@@ -61,81 +43,46 @@ function looksLikeTopic(line) {
     if (/^[A-Z]?[\-–—]?\s*[IVXLC]+[.)\-:]\s+/.test(value)) return true;
     return false;
 }
-
 function topicNameFromLine(line) {
-    return clean(line)
-        .replace(/^\s*(?:unit|module|chapter|lesson|topic|week)\s*(?:[ivxlcdm]+|\d+(?:\.\d+)*)\s*[:.)\-–—]?\s*/i, "")
-        .replace(/^\s*\d+(?:\.\d+)*[.)\-–—:]?\s*/, "")
-        .replace(/^\s*[IVXLC]+[.)\-–—:]\s*/, "")
-        .trim();
+    return clean(line).replace(/^\s*(?:unit|module|chapter|lesson|topic|week)\s*(?:[ivxlcdm]+|\d+(?:\.\d+)*)\s*[:.)\-–—]?\s*/i, "").replace(/^\s*\d+(?:\.\d+)*[.)\-–—:]?\s*/, "").replace(/^\s*[IVXLC]+[.)\-–—:]\s*/, "").trim();
 }
 
-/*
- * First pass: use the curriculum's own numbering/headings.
- * This avoids spending an AI request on a clearly structured syllabus.
- */
 export function parseStructuredCurriculum(text) {
-    const lines = String(text || "")
-        .split(/\r?\n/)
-        .map(clean)
-        .filter(Boolean);
-
+    const lines = String(text || "").split(/\r?\n/).map(clean).filter(Boolean);
     const subjects = [];
     let current = null;
-
     for (const line of lines) {
         if (looksLikeSubject(line)) {
-            const name = subjectNameFromLine(line);
-            const key = normalise(name);
+            const name = subjectNameFromLine(line), key = normalise(name);
             if (!key) continue;
             if (!subjects.some(subject => normalise(subject.name) === key)) {
                 current = { name, description: "", topics: [] };
                 subjects.push(current);
-            } else {
-                current = subjects.find(subject => normalise(subject.name) === key);
-            }
+            } else current = subjects.find(subject => normalise(subject.name) === key);
             continue;
         }
-
         if (current && looksLikeTopic(line)) {
             const topic = topicNameFromLine(line);
-            if (topic && !current.topics.some(existing => normalise(existing) === normalise(topic))) {
-                current.topics.push(topic);
-            }
+            if (topic && !current.topics.some(existing => normalise(existing) === normalise(topic))) current.topics.push(topic);
         }
     }
-
     const useful = subjects.filter(subject => subject.topics.length || subjects.length <= 6);
-    if (useful.length >= 1) return useful;
-    return [];
+    return useful.length >= 1 ? useful : [];
 }
 
 export async function analyzeCurriculum(file) {
     const text = await extractCurriculumText(file);
-
-    if (!text) {
-        throw new Error("This file does not contain readable text. Try a text-based PDF or TXT/MD/CSV file.");
-    }
-
+    if (!text) throw new Error("This file does not contain readable text. Try a text-based PDF or TXT/MD/CSV file.");
     const structured = parseStructuredCurriculum(text);
-
-    /* Structured curricula are handled locally and immediately. */
-    if (structured.length) {
-        return structured;
-    }
-
-    /* AI remains the fallback for messy/unstructured curricula. */
-    const response = await fetch("/api/curriculum", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curriculum: text })
-    });
-
+    if (structured.length) return structured;
+    const response = await fetch("/api/curriculum", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ curriculum: text }) });
     const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-        throw new Error(result.error || "Curriculum analysis failed.");
-    }
-
+    if (!response.ok) throw new Error(result.error || "Curriculum analysis failed.");
     return result.subjects || [];
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("acceptCurriculum")?.addEventListener("click", function () {
+        localStorage.setItem("studyOS-curriculum-organized", "true");
+    }, { once: true });
+});
