@@ -1,0 +1,67 @@
+/* Nivora unified visual system: warm, calm, and intentionally uncluttered. */
+:root{
+  --background:#24231F;
+  --surface:#2D2B26;
+  --surface-2:#37342D;
+  --border:#49443A;
+  --border-strong:#5A5246;
+  --text:#F1EDE5;
+  --muted:#B5ADA0;
+  --accent:#C9795C;
+  --danger:#D06A68;
+  --success:#9AAA8B;
+}
+body.light{
+  --background:#EDE5D8;
+  --surface:#F7F2E9;
+  --surface-2:#E3D9C9;
+  --border:#CEC1AE;
+  --border-strong:#B7A894;
+  --text:#34332E;
+  --muted:#756E64;
+  --accent:#B9684E;
+  --danger:#B95150;
+  --success:#819777;
+}
+
+/* Consistent palette */
+body{background:var(--background);color:var(--text)}
+.navbar{background:color-mix(in srgb,var(--background) 94%,transparent);border-color:var(--border)}
+.logo,.nav-links a.active,.nav-links a:hover,.eyebrow,.section-kicker{color:var(--accent)}
+.theme-toggle,.profile-button{background:var(--surface);border-color:var(--border);color:var(--text)}
+.primary-button{background:var(--accent);border-color:var(--accent);color:#FFF9F2}
+.primary-button:hover{background:color-mix(in srgb,var(--accent) 88%,#000);opacity:1}
+.secondary-button{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+.secondary-button:hover{background:var(--surface-2);border-color:var(--accent)}
+.focus-panel,.subjects-panel,.simple-section,.subject-card,.modal-card,.setup-card,.setup-topics-card{background:var(--surface);border-color:var(--border)}
+.subject-icon,.subject-main-icon{background:var(--surface-2);border-color:var(--border-strong);color:var(--success)}
+.progress-track{background:var(--surface-2)}
+.progress-value{background:var(--success)}
+footer{background:var(--background);border-color:var(--border)}
+
+/* Calm, consistent spacing */
+.container{width:min(1080px,90%);padding-top:58px;padding-bottom:78px}
+.dashboard-header,.page-header{margin-bottom:34px}
+.dashboard-grid{gap:30px;margin-bottom:30px}
+.stats-grid{margin-bottom:30px}
+.focus-panel,.subjects-panel,.simple-section{padding:30px}
+.subjects-grid{gap:20px}
+.subject-card{padding:28px}
+.simple-section{margin-bottom:24px}
+.subject-card:hover{transform:none;box-shadow:0 10px 28px rgba(0,0,0,.10)}
+.dashboard-subject-row,.attention-row,.material-row{min-height:56px}
+.dashboard-subject-list,.attention-list,.material-list{margin-top:20px}
+
+/* Keep decorative motion subtle rather than busy. */
+.ambient-background{opacity:.38}
+.ambient-background:before,.ambient-background:after{animation:none;opacity:.035}
+.ambient-background span{display:none}
+
+/* Softer controls and cards */
+.modal-card,.setup-card,.setup-topics-card,.subject-card,.focus-panel,.subjects-panel,.simple-section{border-radius:10px}
+.modal-card input,.modal-card textarea,.setup-form input,.setup-form textarea,.setup-card select,.topic-builder input,.topic-builder select{background:var(--surface-2);border-color:var(--border-strong);color:var(--text)}
+
+@media(max-width:800px){
+  .container{padding-top:45px;padding-bottom:60px}
+  .focus-panel,.subjects-panel,.simple-section,.subject-card{padding:23px}
+}
