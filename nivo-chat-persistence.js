@@ -25,7 +25,7 @@
     const restore=()=>{
         const modal=document.getElementById("topicModal"),messages=document.getElementById("chatMessages");
         if(!modal||!messages||modal.classList.contains("hidden"))return;
-        const key=getTopicKey();if(!key||key.endsWith("::Topic")||key===lastKey)return;
+        const key=getTopicKey();if(!key||key.endsWith("::Topic"))return;
         lastKey=key;
         const saved=loadAll()[key];
         if(!saved)return;
@@ -49,7 +49,11 @@
     };
     document.addEventListener("DOMContentLoaded",()=>{
         const modal=document.getElementById("topicModal"),messages=document.getElementById("chatMessages");if(!modal||!messages)return;
-        new MutationObserver(()=>{setTimeout(restore,40);setTimeout(persist,120);}).observe(modal,{attributes:true,attributeFilter:["class"]});
+        new MutationObserver(()=>{
+            if(modal.classList.contains("hidden"))lastKey=null;
+            else setTimeout(restore,40);
+            setTimeout(persist,120);
+        }).observe(modal,{attributes:true,attributeFilter:["class"]});
         new MutationObserver(()=>{clearTimeout(window.__nivoPersistTimer);window.__nivoPersistTimer=setTimeout(persist,250);}).observe(messages,{childList:true,subtree:true,characterData:true});
         document.addEventListener("click",event=>{if(event.target.closest("[data-nivo-mode]")){setTimeout(persist,60);}});
         setTimeout(restore,250);
