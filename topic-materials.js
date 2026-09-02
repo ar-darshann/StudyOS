@@ -4,13 +4,26 @@
     const esc = value => String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");
     const context = () => { const subjectId=new URLSearchParams(location.search).get("subject"); const subjects=window.studyOSStorage?window.studyOSStorage.getSubjects():{}; return {subjectId,subject:subjects[subjectId]}; };
     const profile = () => { try { const path=JSON.parse(localStorage.getItem("nivora-learning-path")||"null"); return path?.profile||path||{}; } catch { return {}; } };
-
+    const chatKey = () => state.subjectId && state.topic?.id ? `nivora-nivo-chat:${state.subjectId}:${state.topic.id}` : null;
+    function loadSavedChat(){
+        const messages=document.getElementById("chatMessages"); if(!messages)return;
+        const key=chatKey(); let saved=[];
+        try{ saved=key?JSON.parse(localStorage.getItem(key)||"[]"):[]; }catch{ saved=[]; }
+        if(!Array.isArray(saved)||!saved.length){ resetChat(); return; }
+        messages.innerHTML="";
+        saved.forEach(item=>{ if(item?.role&&item?.content) appendMessage(item.role,item.content,false); });
+        messages.scrollTop=messages.scrollHeight;
+    }
+    function saveChat(){
+        const key=chatKey(),messages=document.getElementById("chatMessages"); if(!key||!messages)return;
+        const history=Array.from(messages.querySelectorAll(".chat-message")).map(node=>({role:node.classList.contains("user")?"user":"assistant",content:(node.querySelector("p")?.textContent||"").trim()})).filter(x=>x.content).slice(-40);
+        try{localStorage.setItem(key,JSON.stringify(history));}catch(error){console.warn("Could not save Nivo chat",error);}
+    }
     async function materials(){
         if(!window.studyOSStorage||!state.subjectId||!state.topic?.id)return [];
         const all=await window.studyOSStorage.getMaterials(state.subjectId);
         return all.filter(m=>m.topicId===state.topic.id);
     }
-
     function ensureTopicId(subject,index,subjectId){
         const topic=subject.topics[index];
         if(!topic.id){
@@ -21,12 +34,10 @@
         }
         return topic.id;
     }
-
     function resetChat(){
         const messages=document.getElementById("chatMessages");
         if(messages)messages.innerHTML='<div class="chat-message assistant"><strong>Nivo</strong><p>Choose a learning style above, then tell me what you want to learn.</p></div>';
     }
-
     function setMode(mode){
         state.mode=mode;
         const labels={explanation:"Explanation",interactive:"Interactive Learning"};
@@ -40,8 +51,8 @@
         if(badge){badge.classList.remove("hidden");if(badgeText)badgeText.textContent=labels[mode]||mode;}
         if(description)description.textContent=descriptions[mode]||"Nivo is ready to help you learn this topic.";
         if(input)input.placeholder=mode==="interactive"?"Tell Nivo what part you want to learn...":"Ask Nivo to explain...";
+        loadSavedChat();
     }
-
     function changeMode(){
         state.mode=null;
         document.getElementById("nivoLearningModes")?.classList.remove("hidden");
@@ -50,7 +61,6 @@
         if(description)description.textContent="Choose how you want Nivo to teach this topic.";
         resetChat();
     }
-
     function openWorkspace(topic,subjectId){
         state.subjectId=subjectId;state.topic=topic;state.mode=null;
         const title=document.getElementById("topicWorkspaceTitle"),meta=document.getElementById("topicWorkspaceMeta"),modal=document.getElementById("topicModal");
@@ -59,18 +69,16 @@
         if(meta)meta.textContent=started?`${Number(topic.score||0)}% progress`:"Not started · 0% complete";
         if(modal)modal.classList.remove("hidden");
         document.body.classList.add("modal-open");
-        resetChat();
         document.getElementById("nivoLearningModes")?.classList.remove("hidden");
         document.getElementById("nivoModeBadge")?.classList.add("hidden");
         const description=document.getElementById("nivoModeDescription");
         if(description)description.textContent="Choose how you want Nivo to teach this topic.";
         const results=document.getElementById("pdfSearchResults");
         if(results){results.classList.add("hidden");results.innerHTML="";}
+        resetChat();
         renderMaterials();
     }
-
-    function closeWorkspace(){document.getElementById("topicModal")?.classList.add("hidden");document.body.classList.remove("modal-open");state.topic=null;state.mode=null;}
-
+    function closeWorkspace(){saveChat();document.getElementById("topicModal")?.classList.add("hidden");document.body.classList.remove("modal-open");state.topic=null;state.mode=null;}
     async function renderMaterials(){
         const list=document.getElementById("topicMaterialList"),count=document.getElementById("materialCount");
         if(!list)return;
@@ -87,7 +95,6 @@
             });
         }catch(error){console.error("Could not load topic materials",error);list.innerHTML='<div class="topic-empty-materials"><strong>Materials could not be loaded.</strong><span>You can still upload a PDF or try again.</span></div>';}
     }
-
     async function uploadPdfs(){
         const input=document.getElementById("topicPdfInput");if(!input||!state.topic)return;
         for(const file of Array.from(input.files||[])){
@@ -97,14 +104,12 @@
         }
         input.value="";renderMaterials();
     }
-
     function showPdfError(message,canRetry=true){
         const results=document.getElementById("pdfSearchResults");if(!results)return;
         results.classList.remove("hidden");
         results.innerHTML=`<div class="pdf-search-error"><div class="pdf-error-icon">!</div><strong>${esc(message)}</strong><span>Nivo couldn't return a usable PDF list for this topic.</span>${canRetry?'<button type="button" class="secondary-button pdf-retry">Try again</button>':''}</div>`;
         results.querySelector(".pdf-retry")?.addEventListener("click",findPdfs);
     }
-
     async function findPdfs(){
         const results=document.getElementById("pdfSearchResults");if(!results||!state.topic)return;
         results.classList.remove("hidden");results.innerHTML='<div class="pdf-search-loading"><div class="nivo-spinner">N</div><strong>Nivo is finding the best PDFs…</strong><span>First identifying the useful academic concept, then searching for direct PDFs.</span></div>';
@@ -125,17 +130,14 @@
             });
         }catch(error){console.error("Nivora PDF search request failed",error);showPdfError(error.name==="AbortError"?"The PDF search took too long to respond.":(error.message||"PDF search failed."),true);}
     }
-
     function getHistory(){
         const messages=document.getElementById("chatMessages");if(!messages)return [];
         return Array.from(messages.querySelectorAll(".chat-message")).map(node=>({role:node.classList.contains("user")?"user":"assistant",content:(node.querySelector("p")?.textContent||"").trim()})).filter(x=>x.content).slice(-12);
     }
-
-    function appendMessage(role,content){
+    function appendMessage(role,content,persist=true){
         const messages=document.getElementById("chatMessages");if(!messages)return null;
-        const node=document.createElement("div");node.className=`chat-message ${role}`;node.innerHTML=`<strong>${role==="user"?"You":"Nivo"}</strong><p>${esc(content)}</p>`;messages.appendChild(node);messages.scrollTop=messages.scrollHeight;return node;
+        const node=document.createElement("div");node.className=`chat-message ${role}`;node.innerHTML=`<strong>${role==="user"?"You":"Nivo"}</strong><p>${esc(content)}</p>`;messages.appendChild(node);messages.scrollTop=messages.scrollHeight;if(persist)saveChat();return node;
     }
-
     async function sendChat(event){
         event.preventDefault();
         const input=document.getElementById("topicChatInput"),messages=document.getElementById("chatMessages"),text=input?.value.trim();
@@ -148,11 +150,10 @@
             const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject:context().subject?.name||"",topic:state.topic.name,message:text,history,mode:state.mode,profile:profile()})});
             let data={};try{data=await response.json();}catch{throw new Error("Nivo returned an invalid response.");}
             if(!response.ok)throw new Error(data.error||"Nivo could not respond.");
-            loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(data.reply||"I couldn't generate a response.")}</p>`;
-        }catch(error){loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(error.message||"Nivo could not respond right now.")}</p>`;}
+            loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(data.reply||"I couldn't generate a response.")}</p>`;saveChat();
+        }catch(error){loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(error.message||"Nivo could not respond right now.")}</p>`;saveChat();}
         messages.scrollTop=messages.scrollHeight;
     }
-
     function enhanceTopics(){
         const list=document.getElementById("subjectTopicsList"),ctx=context();if(!list||!ctx.subject)return;
         Array.from(list.querySelectorAll(".subject-topic-row")).forEach((row,index)=>{
@@ -162,9 +163,7 @@
             row.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openWorkspace(topic,ctx.subjectId);}});
         });
     }
-
     window.NivoraTopicWorkspace={open:openWorkspace,close:closeWorkspace};
-
     document.addEventListener("DOMContentLoaded",()=>{
         enhanceTopics();
         const list=document.getElementById("subjectTopicsList");if(list)new MutationObserver(enhanceTopics).observe(list,{childList:true});
