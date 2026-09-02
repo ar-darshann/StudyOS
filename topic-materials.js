@@ -36,7 +36,7 @@
     }
     function resetChat(){
         const messages=document.getElementById("chatMessages");
-        if(messages)messages.innerHTML='<div class="chat-message assistant"><strong>Nivo</strong><p>Choose a learning style above, then tell me what you want to learn.</p></div>';
+        if(messages)messages.innerHTML='<div class="chat-message assistant"><strong>Nivo</strong><p>Hey! I’m here. Tell me what you’re working on, what’s confusing you, or just talk to me about the topic.</p></div>';
     }
     function setMode(mode){
         state.mode=mode;
@@ -58,8 +58,10 @@
         document.getElementById("nivoLearningModes")?.classList.remove("hidden");
         document.getElementById("nivoModeBadge")?.classList.add("hidden");
         const description=document.getElementById("nivoModeDescription");
-        if(description)description.textContent="Choose how you want Nivo to teach this topic.";
-        resetChat();
+        if(description)description.textContent="Learning style is optional — you can just chat with Nivo.";
+        const input=document.getElementById("topicChatInput");
+        if(input)input.placeholder="Ask Nivo anything about this topic...";
+        loadSavedChat();
     }
     function openWorkspace(topic,subjectId){
         state.subjectId=subjectId;state.topic=topic;state.mode=null;
@@ -72,10 +74,12 @@
         document.getElementById("nivoLearningModes")?.classList.remove("hidden");
         document.getElementById("nivoModeBadge")?.classList.add("hidden");
         const description=document.getElementById("nivoModeDescription");
-        if(description)description.textContent="Choose how you want Nivo to teach this topic.";
+        if(description)description.textContent="Learning style is optional — you can just chat with Nivo.";
+        const input=document.getElementById("topicChatInput");
+        if(input){input.placeholder="Ask Nivo anything about this topic...";input.disabled=false;}
         const results=document.getElementById("pdfSearchResults");
         if(results){results.classList.add("hidden");results.innerHTML="";}
-        resetChat();
+        loadSavedChat();
         renderMaterials();
     }
     function closeWorkspace(){saveChat();document.getElementById("topicModal")?.classList.add("hidden");document.body.classList.remove("modal-open");state.topic=null;state.mode=null;}
@@ -142,12 +146,11 @@
         event.preventDefault();
         const input=document.getElementById("topicChatInput"),messages=document.getElementById("chatMessages"),text=input?.value.trim();
         if(!text||!state.topic||!messages)return;
-        if(!state.mode){appendMessage("assistant","Choose Explanation or Interactive Learning first, so I can teach this topic in the way you want.");return;}
         const history=getHistory();
         appendMessage("user",text);input.value="";
         const loading=document.createElement("div");loading.className="chat-message assistant typing";loading.innerHTML='<strong>Nivo</strong><p>Thinking…</p>';messages.appendChild(loading);messages.scrollTop=messages.scrollHeight;
         try{
-            const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject:context().subject?.name||"",topic:state.topic.name,message:text,history,mode:state.mode,profile:profile()})});
+            const response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject:context().subject?.name||"",topic:state.topic.name,message:text,history,mode:state.mode||"chat",profile:profile()})});
             let data={};try{data=await response.json();}catch{throw new Error("Nivo returned an invalid response.");}
             if(!response.ok)throw new Error(data.error||"Nivo could not respond.");
             loading.classList.remove("typing");loading.innerHTML=`<strong>Nivo</strong><p>${esc(data.reply||"I couldn't generate a response.")}</p>`;saveChat();
