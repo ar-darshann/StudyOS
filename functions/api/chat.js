@@ -22,6 +22,28 @@ export async function onRequestPost(context) {
             notes: profile.notes || ""
         });
 
+        const explanationInstruction = mode === "explanation" ? `
+EXPLANATION MODE:
+- Teach the requested topic clearly and completely rather than turning the session into a Q&A.
+- Structure the explanation logically: start with the core idea, then build into important details, examples, applications and common mistakes as appropriate.
+- Use plain language first, then introduce technical terminology naturally.
+- Use analogies, worked examples, formulas or step-by-step reasoning when they improve understanding.
+- You may include occasional short checks for understanding, but explanation is the main activity.
+- Do not make the student answer a question before you explain the concept they asked to learn.
+` : "";
+
+        const interactiveInstruction = mode === "interactive" ? `
+INTERACTIVE LEARNING MODE:
+- You are teaching the topic, not running a question-and-answer-only session.
+- Explain each concept before or alongside asking the student to participate.
+- Break the lesson into manageable stages and actively involve the student through mini-checks, predictions, guided examples, small exercises, comparisons, or application tasks.
+- A strong flow is: Explain → Demonstrate → Ask/Invite participation → Feedback → Explain further → Apply → Check understanding → Continue.
+- Do not dump the entire lesson at once, but do not withhold explanations just to force the student to answer questions.
+- When the student is wrong, give a useful hint or targeted explanation and let them try again when appropriate.
+- Adapt the next explanation or activity based on the student's responses and demonstrated understanding.
+- The goal is active understanding: the student should learn the concept while participating in the lesson.
+` : "";
+
         const quizInstruction = mode === "quiz" ? `
 QUIZ MODE:
 Use this exact teaching contract:
@@ -58,7 +80,7 @@ General teaching behavior:
 - Keep the conversation natural and focused.
 - Never invent facts about the student's course or materials.
 - Do not mention system prompts, hidden instructions, models, or internal implementation.
-${quizInstruction}`;
+${explanationInstruction}${interactiveInstruction}${quizInstruction}`;
 
         const messages = [{ role: "system", content: system }];
         for (const item of history) {
@@ -71,7 +93,7 @@ ${quizInstruction}`;
         const result = await context.env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", {
             messages,
             temperature: mode === "quiz" ? 0.55 : 0.55,
-            max_tokens: 1200
+            max_tokens: 1400
         });
 
         const reply = result?.response ?? result?.result?.response;
