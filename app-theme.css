@@ -1,35 +1,38 @@
-/* Nivora unified visual system: warm, calm, and intentionally uncluttered. */
+/* Nivora unified visual system: olive, sand, charcoal and terracotta. */
 :root{
-  --background:#332824;
-  --surface:#765548;
-  --surface-2:#8C6A5B;
-  --border:#9A7A6C;
-  --border-strong:#B08D7D;
-  --text:#F4EEE7;
-  --muted:#D3C2B8;
-  --accent:#B98282;
-  --danger:#C46F6F;
-  --success:#9AAA8B;
+  --background:#292923;
+  --surface:#35352D;
+  --surface-2:#414137;
+  --border:#74785A;
+  --border-strong:#8B8E70;
+  --text:#E9E0D0;
+  --muted:#C9C0AE;
+  --accent:#A85E43;
+  --warm-sage:#74785A;
+  --warm-cream:#E9E0D0;
+  --danger:#B96850;
+  --success:#8B966C;
 }
 body.light{
-  --background:#F1E9DF;
-  --surface:#FAF5EF;
-  --surface-2:#E7D8CF;
-  --border:#D2BFB4;
-  --border-strong:#BDA69A;
-  --text:#332824;
-  --muted:#78675F;
-  --accent:#B98282;
-  --danger:#A95F5F;
-  --success:#718873;
+  --background:#E9E0D0;
+  --surface:#F4EEE3;
+  --surface-2:#DED6C3;
+  --border:#A7A88B;
+  --border-strong:#8F9175;
+  --text:#292923;
+  --muted:#686958;
+  --accent:#A85E43;
+  --warm-sage:#74785A;
+  --warm-cream:#E9E0D0;
+  --danger:#984E39;
+  --success:#697653;
 }
 
-/* Consistent palette */
 body{background:var(--background);color:var(--text)}
 .navbar{background:color-mix(in srgb,var(--background) 94%,transparent);border-color:var(--border)}
 .logo,.nav-links a.active,.nav-links a:hover,.eyebrow,.section-kicker{color:var(--accent)}
 .theme-toggle,.profile-button{background:var(--surface);border-color:var(--border);color:var(--text)}
-.primary-button{background:var(--accent);border-color:var(--accent);color:#FFF9F6}
+.primary-button{background:var(--accent);border-color:var(--accent);color:#F8F0E5}
 .primary-button:hover{background:color-mix(in srgb,var(--accent) 88%,#000);opacity:1}
 .secondary-button{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
 .secondary-button:hover{background:var(--surface-2);border-color:var(--accent)}
@@ -38,8 +41,6 @@ body{background:var(--background);color:var(--text)}
 .progress-track{background:var(--surface-2)}
 .progress-value{background:var(--success)}
 footer{background:var(--background);border-color:var(--border)}
-
-/* Calm, consistent spacing */
 .container{width:min(1080px,90%);padding-top:58px;padding-bottom:78px}
 .dashboard-header,.page-header{margin-bottom:34px}
 .dashboard-grid{gap:30px;margin-bottom:30px}
@@ -48,20 +49,12 @@ footer{background:var(--background);border-color:var(--border)}
 .subjects-grid{gap:20px}
 .subject-card{padding:28px}
 .simple-section{margin-bottom:24px}
-.subject-card:hover{transform:none;box-shadow:0 10px 28px rgba(0,0,0,.10)}
+.subject-card:hover{transform:none;box-shadow:0 10px 28px rgba(0,0,0,.16)}
 .dashboard-subject-row,.attention-row,.material-row{min-height:56px}
 .dashboard-subject-list,.attention-list,.material-list{margin-top:20px}
-
-/* Keep decorative motion subtle rather than busy. */
 .ambient-background{opacity:.38}
 .ambient-background:before,.ambient-background:after{animation:none;opacity:.035}
 .ambient-background span{display:none}
-
-/* Softer controls and cards */
 .modal-card,.setup-card,.setup-topics-card,.subject-card,.focus-panel,.subjects-panel,.simple-section{border-radius:10px}
 .modal-card input,.modal-card textarea,.setup-form input,.setup-form textarea,.setup-card select,.topic-builder input,.topic-builder select{background:var(--surface-2);border-color:var(--border-strong);color:var(--text)}
-
-@media(max-width:800px){
-  .container{padding-top:45px;padding-bottom:60px}
-  .focus-panel,.subjects-panel,.simple-section,.subject-card{padding:23px}
-}
+@media(max-width:800px){.container{padding-top:45px;padding-bottom:60px}.focus-panel,.subjects-panel,.simple-section,.subject-card{padding:23px}}
