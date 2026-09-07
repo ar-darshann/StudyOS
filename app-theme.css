@@ -1,39 +1,38 @@
-/* Nivora unified visual system: electric blue, black and cool neutrals. */
+/* Nivora global visual system: midnight graphite, electric blue and violet. */
 :root{
-  --background:#05070A;
-  --surface:#0B0F14;
-  --surface-2:#111821;
-  --border:#1C2A38;
-  --border-strong:#2A3D52;
-  --text:#F2F7FF;
-  --muted:#8FA3B8;
-  --accent:#168BFF;
-  --warm-sage:#168BFF;
-  --warm-cream:#F2F7FF;
+  --background:#06080D;
+  --surface:#0D121C;
+  --surface-2:#151B28;
+  --border:#202B40;
+  --border-strong:#2D3B56;
+  --text:#F3F6FF;
+  --muted:#96A3B8;
+  --accent:#4F8CFF;
+  --warm-sage:#7C63FF;
+  --warm-cream:#F3F6FF;
   --danger:#FF5572;
-  --success:#168BFF;
+  --success:#4F8CFF;
 }
 body.light{
-  --background:#05070A;
-  --surface:#0B0F14;
-  --surface-2:#111821;
-  --border:#1C2A38;
-  --border-strong:#2A3D52;
-  --text:#F2F7FF;
-  --muted:#8FA3B8;
-  --accent:#168BFF;
-  --warm-sage:#168BFF;
-  --warm-cream:#F2F7FF;
+  --background:#06080D;
+  --surface:#0D121C;
+  --surface-2:#151B28;
+  --border:#202B40;
+  --border-strong:#2D3B56;
+  --text:#F3F6FF;
+  --muted:#96A3B8;
+  --accent:#4F8CFF;
+  --warm-sage:#7C63FF;
+  --warm-cream:#F3F6FF;
   --danger:#FF5572;
-  --success:#168BFF;
+  --success:#4F8CFF;
 }
-
 body{background:var(--background);color:var(--text)}
 .navbar{background:color-mix(in srgb,var(--background) 94%,transparent);border-color:var(--border)}
 .logo,.nav-links a.active,.nav-links a:hover,.eyebrow,.section-kicker{color:var(--accent)}
 .theme-toggle,.profile-button{background:var(--surface);border-color:var(--border);color:var(--text)}
 .primary-button{background:var(--accent);border-color:var(--accent);color:#fff}
-.primary-button:hover{background:#0078EE;opacity:1}
+.primary-button:hover{background:#6B9EFF;opacity:1}
 .secondary-button{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
 .secondary-button:hover{background:var(--surface-2);border-color:var(--accent)}
 .focus-panel,.subjects-panel,.simple-section,.subject-card,.modal-card,.setup-card,.setup-topics-card{background:var(--surface);border-color:var(--border)}
