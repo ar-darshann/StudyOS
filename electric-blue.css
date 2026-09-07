@@ -24,3 +24,14 @@ body.landing-page[data-theme="dark"],body.landing-page[data-theme="light"]{--lan
 .landing-modal-backdrop{background:rgba(0,0,0,.94)}
 .landing-modal-close{background:var(--landing-surface-2);color:var(--landing-muted)}
 .landing-modal-card input{background:var(--landing-bg);border-color:var(--landing-border);color:var(--landing-text)}
+
+/* Subtle physical wobble for the hero preview card. */
+.preview-window{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease;transform-origin:center center;will-change:transform}
+.preview-window:hover{animation:heroCardWobble 1.15s ease-in-out infinite;box-shadow:0 34px 85px rgba(0,0,0,.92),0 0 45px rgba(59,130,246,.08)}
+@keyframes heroCardWobble{
+  0%,100%{transform:rotate(1.2deg) translateY(0) rotateZ(0deg)}
+  25%{transform:rotate(.5deg) translateY(-3px) rotateZ(-.45deg)}
+  50%{transform:rotate(1.8deg) translateY(-5px) rotateZ(.45deg)}
+  75%{transform:rotate(.8deg) translateY(-3px) rotateZ(-.25deg)}
+}
+@media (prefers-reduced-motion:reduce){.preview-window:hover{animation:none;transform:rotate(1.2deg)}}
