@@ -1,57 +1,14 @@
-/* Nivora subject detail page: polished black, slate and professional blue. */
-.nivora-subject-page{background:#080A0D!important;color:#F1F3F5!important}
-.nivora-subject-page .navbar{background:rgba(8,10,13,.96)!important;border-bottom-color:#252B33!important}
-.nivora-subject-page .logo,.nivora-subject-page .nav-links a{color:#F1F3F5}
-.nivora-subject-page .nav-links a{color:#98A2B3}
-.nivora-subject-page .nav-links a.active{color:#F1F3F5}
-.nivora-subject-page .nav-links a.active:after{background:#3B82F6!important}
-.nivora-leaf{color:#60A5FA!important}
-.subject-sidebar{border-right-color:#252B33!important;background:#0A0C10!important}
-.sidebar-subject-card,.subject-main .subject-stats,.subject-main .topics-section,.subject-main .subject-topic-row{background:#101318!important;border-color:#252B33!important}
-.sidebar-subject-card i{background:linear-gradient(90deg,#3B82F6 34%,#171B21 34%)!important}
-.sidebar-nav a,.sidebar-logout{color:#98A2B3!important}
-.sidebar-nav a:hover{color:#F1F3F5!important;background:#171B21!important}
-.sidebar-nav a.active{color:#F1F3F5!important;background:rgba(59,130,246,.11)!important}
-.sidebar-logout{border-color:#252B33!important}
-.sidebar-logout:hover{border-color:#3B82F6!important;color:#F1F3F5!important}
-.subject-main .back-link{color:#98A2B3!important}
-.subject-main .back-link:hover{color:#60A5FA!important}
-.subject-main .eyebrow,.subject-main .section-kicker{color:#60A5FA!important}
-.subject-main .subject-stats{background:#101318!important}
-.subject-main .stat-card{border-right-color:#252B33!important}
-.subject-main .topics-section{background:#101318!important}
-.subject-main .section-description{color:#98A2B3!important}
-.subject-main .subject-topic-row{background:#101318!important;border-color:#252B33!important}
-.subject-main .subject-topic-row:hover{background:rgba(59,130,246,.045)!important;border-color:#3B82F6!important;box-shadow:0 8px 24px rgba(0,0,0,.5)!important}
-.subject-main .subject-topic-row>div:before{background:rgba(59,130,246,.1)!important;color:#60A5FA!important;border-color:rgba(59,130,246,.32)!important}
-.subject-main .subject-topic-row>strong{color:#98A2B3!important}
-.subject-main-icon{background:#171B21!important;border-color:#343C47!important;color:#60A5FA!important}
-.theme-toggle,.profile-button{background:#101318!important;border-color:#252B33!important;color:#F1F3F5!important}
-.profile-menu{background:#101318!important;border-color:#343C47!important}
-.profile-menu button{color:#F1F3F5!important}
-.profile-menu button:hover{background:#171B21!important}
-.primary-button{background:#3B82F6!important;border-color:#3B82F6!important;color:#fff!important}
-.secondary-button{background:#101318!important;border-color:#343C47!important;color:#F1F3F5!important}
-.secondary-button:hover{background:#171B21!important;border-color:#3B82F6!important}
-.topic-workspace{background:#101318!important;border-color:#343C47!important;box-shadow:0 30px 90px rgba(0,0,0,.72)!important}
-.topic-modal-icon{background:rgba(59,130,246,.1)!important;color:#60A5FA!important;box-shadow:none!important}
-.topic-tabs{background:#171B21!important}
-.topic-tab{color:#98A2B3!important}
-.topic-tab.active{background:rgba(59,130,246,.11)!important;color:#F1F3F5!important;box-shadow:inset 0 -1px 0 #3B82F6!important}
-.material-action-card,.large-item,.pdf-result-card{background:#101318!important;border-color:#252B33!important;color:#F1F3F5!important}
-.material-action-card:hover{background:#171B21!important;border-color:#3B82F6!important}
-.material-action-icon{background:#171B21!important;color:#60A5FA!important}
-.topic-results-header,.pdf-result-info span,.pdf-result-info p,.topic-workspace-meta,.chat-intro p,.chat-disclaimer{color:#98A2B3!important}
-.pdf-add-result,.preview-button{background:#3B82F6!important;color:#fff!important}
-.chat-messages{background:#080A0D!important;border-color:#252B33!important}
-.chat-message{background:transparent!important;border-color:transparent!important;color:#F1F3F5!important}
-.chat-message.user{background:rgba(59,130,246,.11)!important;border-color:rgba(59,130,246,.2)!important}
-.chat-message.user strong{color:#60A5FA!important}
-.chat-form input{background:#171B21!important;border-color:#343C47!important;color:#F1F3F5!important}
-.chat-form input:focus{border-color:#3B82F6!important}
-.chat-form button{background:#3B82F6!important;color:#fff!important}
-.modal-backdrop{background:rgba(0,0,0,.78)!important}
-.modal-card{background:#101318!important;border-color:#343C47!important}
-.modal-card input,.modal-card textarea{background:#171B21!important;border-color:#343C47!important;color:#F1F3F5!important}
-footer{background:#080A0D!important;border-top-color:#252B33!important;color:#98A2B3!important}
-@media(max-width:760px){.subject-main .subject-stats .stat-card{border-right:0!important;border-bottom-color:#252B33!important}}
+/* Nivora subject detail page: true black, charcoal surfaces and professional blue. */
+.nivora-subject-page{background:#030405!important;color:#F5F7FA!important}
+.nivora-subject-page .navbar{background:rgba(3,4,5,.98)!important;border-bottom-color:#1C2026!important}
+.nivora-subject-page .logo,.nivora-subject-page .nav-links a{color:#F5F7FA}.nivora-subject-page .nav-links a{color:#8C96A5}.nivora-subject-page .nav-links a.active{color:#F5F7FA}.nivora-subject-page .nav-links a.active:after{background:#3B82F6!important}
+.nivora-leaf{color:#60A5FA!important}.subject-sidebar{border-right-color:#1C2026!important;background:#060708!important}
+.sidebar-subject-card,.subject-main .subject-stats,.subject-main .topics-section,.subject-main .subject-topic-row{background:#090B0E!important;border-color:#1C2026!important}
+.sidebar-subject-card i{background:linear-gradient(90deg,#3B82F6 34%,#101317 34%)!important}.sidebar-nav a,.sidebar-logout{color:#8C96A5!important}.sidebar-nav a:hover{color:#F5F7FA!important;background:#101317!important}.sidebar-nav a.active{color:#F5F7FA!important;background:rgba(59,130,246,.1)!important}.sidebar-logout{border-color:#1C2026!important}.sidebar-logout:hover{border-color:#3B82F6!important;color:#F5F7FA!important}
+.subject-main .back-link{color:#8C96A5!important}.subject-main .back-link:hover{color:#60A5FA!important}.subject-main .eyebrow,.subject-main .section-kicker{color:#60A5FA!important}.subject-main .subject-stats{background:#090B0E!important}.subject-main .stat-card{border-right-color:#1C2026!important}.subject-main .topics-section{background:#090B0E!important}.subject-main .section-description{color:#8C96A5!important}.subject-main .subject-topic-row{background:#090B0E!important;border-color:#1C2026!important}.subject-main .subject-topic-row:hover{background:rgba(59,130,246,.035)!important;border-color:#3B82F6!important;box-shadow:0 8px 24px rgba(0,0,0,.65)!important}.subject-main .subject-topic-row>div:before{background:rgba(59,130,246,.08)!important;color:#60A5FA!important;border-color:rgba(59,130,246,.28)!important}.subject-main .subject-topic-row>strong{color:#8C96A5!important}
+.subject-main-icon{background:#101317!important;border-color:#292F38!important;color:#60A5FA!important}.theme-toggle,.profile-button{background:#090B0E!important;border-color:#1C2026!important;color:#F5F7FA!important}.profile-menu{background:#090B0E!important;border-color:#292F38!important}.profile-menu button{color:#F5F7FA!important}.profile-menu button:hover{background:#101317!important}
+.primary-button{background:#3B82F6!important;border-color:#3B82F6!important;color:#fff!important}.secondary-button{background:#090B0E!important;border-color:#292F38!important;color:#F5F7FA!important}.secondary-button:hover{background:#101317!important;border-color:#3B82F6!important}
+.topic-workspace{background:#090B0E!important;border-color:#292F38!important;box-shadow:0 30px 90px rgba(0,0,0,.82)!important}.topic-modal-icon{background:rgba(59,130,246,.08)!important;color:#60A5FA!important;box-shadow:none!important}.topic-tabs{background:#101317!important}.topic-tab{color:#8C96A5!important}.topic-tab.active{background:rgba(59,130,246,.1)!important;color:#F5F7FA!important;box-shadow:inset 0 -1px 0 #3B82F6!important}
+.material-action-card,.large-item,.pdf-result-card{background:#090B0E!important;border-color:#1C2026!important;color:#F5F7FA!important}.material-action-card:hover{background:#101317!important;border-color:#3B82F6!important}.material-action-icon{background:#101317!important;color:#60A5FA!important}.topic-results-header,.pdf-result-info span,.pdf-result-info p,.topic-workspace-meta,.chat-intro p,.chat-disclaimer{color:#8C96A5!important}.pdf-add-result,.preview-button{background:#3B82F6!important;color:#fff!important}
+.chat-messages{background:#030405!important;border-color:#1C2026!important}.chat-message{background:transparent!important;border-color:transparent!important;color:#F5F7FA!important}.chat-message.user{background:rgba(59,130,246,.09)!important;border-color:rgba(59,130,246,.18)!important}.chat-message.user strong{color:#60A5FA!important}.chat-form input{background:#101317!important;border-color:#292F38!important;color:#F5F7FA!important}.chat-form input:focus{border-color:#3B82F6!important}.chat-form button{background:#3B82F6!important;color:#fff!important}.modal-backdrop{background:rgba(0,0,0,.88)!important}.modal-card{background:#090B0E!important;border-color:#292F38!important}.modal-card input,.modal-card textarea{background:#101317!important;border-color:#292F38!important;color:#F5F7FA!important}footer{background:#030405!important;border-top-color:#1C2026!important;color:#8C96A5!important}
+@media(max-width:760px){.subject-main .subject-stats .stat-card{border-right:0!important;border-bottom-color:#1C2026!important}}
