@@ -1,0 +1,22 @@
+/* Nivora landing: final true-black override. Loaded last so legacy landing.css cannot reintroduce the old brown theme. */
+html body.landing-page,
+html body.landing-page[data-theme="light"],
+html body.landing-page[data-theme="dark"]{
+  --landing-bg:#010203 !important;
+  --landing-surface:#050608 !important;
+  --landing-surface-2:#0B0D10 !important;
+  --landing-text:#F5F7FA !important;
+  --landing-muted:#8C96A5 !important;
+  --landing-border:#181C22 !important;
+  --landing-accent:#3B82F6 !important;
+  --landing-accent-hover:#60A5FA !important;
+  --landing-sage:#3B82F6 !important;
+  --landing-shadow:rgba(0,0,0,.85) !important;
+  background:#010203 !important;
+  color:#F5F7FA !important;
+}
+html body.landing-page::before{
+  background:radial-gradient(circle at 72% 42%,rgba(59,130,246,.02),transparent 30%) !important;
+}
+html body.landing-page .preview-shadow{background:rgba(59,130,246,.02) !important}
+html body.landing-page .landing-modal-backdrop{background:rgba(0,0,0,.94) !important}
