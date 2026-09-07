@@ -1,62 +1,15 @@
 /* Nivora landing: final black + gradient override. Loaded last so legacy landing.css cannot reintroduce the old brown theme. */
-html body.landing-page,
-html body.landing-page[data-theme="light"],
-html body.landing-page[data-theme="dark"]{
-  --landing-bg:#010203 !important;
-  --landing-surface:#050608 !important;
-  --landing-surface-2:#0B0D10 !important;
-  --landing-text:#F5F7FA !important;
-  --landing-muted:#8C96A5 !important;
-  --landing-border:#181C22 !important;
-  --landing-accent:#3B82F6 !important;
-  --landing-accent-hover:#60A5FA !important;
-  --landing-sage:#3B82F6 !important;
-  --landing-shadow:rgba(0,0,0,.85) !important;
-  background:
-    radial-gradient(circle at 10% 12%, rgba(37,99,235,.28), transparent 30%),
-    radial-gradient(circle at 88% 48%, rgba(59,130,246,.18), transparent 34%),
-    radial-gradient(circle at 52% 105%, rgba(29,78,216,.12), transparent 32%),
-    linear-gradient(135deg,#010203 0%,#030710 48%,#010203 100%) !important;
-  background-attachment:fixed !important;
-  color:#F5F7FA !important;
-}
-
-html body.landing-page::before{
-  background:
-    radial-gradient(circle at 18% 30%,rgba(59,130,246,.07),transparent 24%),
-    radial-gradient(circle at 82% 70%,rgba(96,165,250,.05),transparent 28%) !important;
-}
-
-html body.landing-page .landing-preview .preview-window{
-  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease !important;
-  transform:rotate(1.2deg) translateY(0) !important;
-  transform-origin:center center;
-  will-change:transform;
-}
-
-html body.landing-page .landing-preview .preview-window:hover{
-  animation:nivoraCardWobble .65s cubic-bezier(.36,.07,.19,.97) both !important;
-  box-shadow:0 32px 90px rgba(0,0,0,.92),0 0 45px rgba(59,130,246,.16) !important;
-  border-color:rgba(96,165,250,.48) !important;
-}
-
-@keyframes nivoraCardWobble{
-  0%{transform:rotate(1.2deg) translateY(0) scale(1)}
-  20%{transform:rotate(.35deg) translateY(-5px) scale(1.008)}
-  40%{transform:rotate(1.9deg) translateY(-7px) scale(1.012)}
-  60%{transform:rotate(.7deg) translateY(-5px) scale(1.008)}
-  80%{transform:rotate(1.55deg) translateY(-3px) scale(1.004)}
-  100%{transform:rotate(1.2deg) translateY(0) scale(1)}
-}
-
-html body.landing-page .preview-shadow{
-  background:rgba(59,130,246,.07) !important;
-  transition:opacity .35s ease,transform .35s ease !important;
-}
-
-html body.landing-page .landing-preview:hover .preview-shadow{
-  opacity:1 !important;
-  transform:scale(1.04) !important;
-}
-
-html body.landing-page .landing-modal-backdrop{background:rgba(0,0,0,.94) !important}
+html body.landing-page,html body.landing-page[data-theme="light"],html body.landing-page[data-theme="dark"]{--landing-bg:#010203!important;--landing-surface:#050608!important;--landing-surface-2:#0B0D10!important;--landing-text:#F5F7FA!important;--landing-muted:#8C96A5!important;--landing-border:#181C22!important;--landing-accent:#3B82F6!important;--landing-accent-hover:#60A5FA!important;--landing-sage:#3B82F6!important;--landing-shadow:rgba(0,0,0,.85)!important;background:radial-gradient(circle at 10% 12%,rgba(37,99,235,.28),transparent 30%),radial-gradient(circle at 88% 48%,rgba(59,130,246,.18),transparent 34%),radial-gradient(circle at 52% 105%,rgba(29,78,216,.12),transparent 32%),linear-gradient(135deg,#010203 0%,#030710 48%,#010203 100%)!important;background-attachment:fixed!important;color:#F5F7FA!important}
+html body.landing-page::before{background:radial-gradient(circle at 18% 30%,rgba(59,130,246,.07),transparent 24%),radial-gradient(circle at 82% 70%,rgba(96,165,250,.05),transparent 28%)!important}
+html body.landing-page .feature-section,html body.landing-page .landing-final{background:transparent!important}
+html body.landing-page .landing-preview .preview-window{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease!important;transform:rotate(1.2deg) translateY(0)!important;transform-origin:center center;will-change:transform}
+html body.landing-page .landing-preview .preview-window:hover{animation:nivoraCardWobble .65s cubic-bezier(.36,.07,.19,.97) both!important;box-shadow:0 32px 90px rgba(0,0,0,.92),0 0 45px rgba(59,130,246,.16)!important;border-color:rgba(96,165,250,.48)!important}
+@keyframes nivoraCardWobble{0%{transform:rotate(1.2deg) translateY(0) scale(1)}20%{transform:rotate(.35deg) translateY(-5px) scale(1.008)}40%{transform:rotate(1.9deg) translateY(-7px) scale(1.012)}60%{transform:rotate(.7deg) translateY(-5px) scale(1.008)}80%{transform:rotate(1.55deg) translateY(-3px) scale(1.004)}100%{transform:rotate(1.2deg) translateY(0) scale(1)}}
+html body.landing-page .preview-shadow{background:rgba(59,130,246,.07)!important;transition:opacity .35s ease,transform .35s ease!important}html body.landing-page .landing-preview:hover .preview-shadow{opacity:1!important;transform:scale(1.04)!important}
+html body.landing-page .preview-window,html body.landing-page .demo-window,html body.landing-page .adaptive-loop div,html body.landing-page .landing-modal-card{background:linear-gradient(145deg,#07090D 0%,#030507 100%)!important}
+html body.landing-page .preview-content,html body.landing-page .chat-messages,html body.landing-page .organizer-flow,html body.landing-page .path-demo,html body.landing-page .workspace-content{background:linear-gradient(145deg,#020408 0%,#010203 100%)!important}
+html body.landing-page .preview-card,html body.landing-page .upload-box,html body.landing-page .ai-processing,html body.landing-page .organized-subject,html body.landing-page .path-result>div,html body.landing-page .material-card,html body.landing-page .chat-mini{background:#050608!important;border-color:#181C22!important}
+html body.landing-page .logo-mark,html body.landing-page .preview-brand span,html body.landing-page .demo-bar>span,html body.landing-page .bubble.user,html body.landing-page .landing-cta,html body.landing-page .landing-start,html body.landing-page .landing-form-submit,html body.landing-page .preview-topic button{background:#3B82F6!important}
+html body.landing-page .kicker-dot,html body.landing-page .preview-card-head b,html body.landing-page .preview-bar span,html body.landing-page .feature-copy li::before,html body.landing-page .flow-arrow,html body.landing-page .processing-dot,html body.landing-page .path-result>div>b{background:#3B82F6!important;color:#3B82F6!important}
+html body.landing-page .landing-hero h1 em,html body.landing-page .feature-copy h2 em,html body.landing-page .landing-final h2 em,html body.landing-page .adaptive-loop i{color:#60A5FA!important}
+html body.landing-page .landing-modal-backdrop{background:rgba(0,0,0,.94)!important}
