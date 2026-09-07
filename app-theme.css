@@ -1,38 +1,38 @@
-/* Nivora global visual system: midnight graphite, electric blue and violet. */
+/* Nivora global visual system: midnight navy, slate and professional blue. */
 :root{
-  --background:#06080D;
-  --surface:#0D121C;
-  --surface-2:#151B28;
-  --border:#202B40;
-  --border-strong:#2D3B56;
-  --text:#F3F6FF;
-  --muted:#96A3B8;
-  --accent:#4F8CFF;
-  --warm-sage:#7C63FF;
-  --warm-cream:#F3F6FF;
-  --danger:#FF5572;
-  --success:#4F8CFF;
+  --background:#0B0F14;
+  --surface:#121820;
+  --surface-2:#18212B;
+  --border:#263341;
+  --border-strong:#334155;
+  --text:#F1F5F9;
+  --muted:#94A3B8;
+  --accent:#3B82F6;
+  --warm-sage:#60A5FA;
+  --warm-cream:#F1F5F9;
+  --danger:#EF4444;
+  --success:#22C55E;
 }
 body.light{
-  --background:#06080D;
-  --surface:#0D121C;
-  --surface-2:#151B28;
-  --border:#202B40;
-  --border-strong:#2D3B56;
-  --text:#F3F6FF;
-  --muted:#96A3B8;
-  --accent:#4F8CFF;
-  --warm-sage:#7C63FF;
-  --warm-cream:#F3F6FF;
-  --danger:#FF5572;
-  --success:#4F8CFF;
+  --background:#0B0F14;
+  --surface:#121820;
+  --surface-2:#18212B;
+  --border:#263341;
+  --border-strong:#334155;
+  --text:#F1F5F9;
+  --muted:#94A3B8;
+  --accent:#3B82F6;
+  --warm-sage:#60A5FA;
+  --warm-cream:#F1F5F9;
+  --danger:#EF4444;
+  --success:#22C55E;
 }
 body{background:var(--background);color:var(--text)}
-.navbar{background:color-mix(in srgb,var(--background) 94%,transparent);border-color:var(--border)}
+.navbar{background:rgba(11,15,20,.94);border-color:var(--border)}
 .logo,.nav-links a.active,.nav-links a:hover,.eyebrow,.section-kicker{color:var(--accent)}
 .theme-toggle,.profile-button{background:var(--surface);border-color:var(--border);color:var(--text)}
 .primary-button{background:var(--accent);border-color:var(--accent);color:#fff}
-.primary-button:hover{background:#6B9EFF;opacity:1}
+.primary-button:hover{background:#60A5FA;opacity:1}
 .secondary-button{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
 .secondary-button:hover{background:var(--surface-2);border-color:var(--accent)}
 .focus-panel,.subjects-panel,.simple-section,.subject-card,.modal-card,.setup-card,.setup-topics-card{background:var(--surface);border-color:var(--border)}
@@ -51,8 +51,8 @@ footer{background:var(--background);border-color:var(--border)}
 .subject-card:hover{transform:none;box-shadow:0 10px 28px rgba(0,0,0,.45)}
 .dashboard-subject-row,.attention-row,.material-row{min-height:56px}
 .dashboard-subject-list,.attention-list,.material-list{margin-top:20px}
-.ambient-background{opacity:.38}
-.ambient-background:before,.ambient-background:after{animation:none;opacity:.035}
+.ambient-background{opacity:.22}
+.ambient-background:before,.ambient-background:after{animation:none;opacity:.03}
 .ambient-background span{display:none}
 .modal-card,.setup-card,.setup-topics-card,.subject-card,.focus-panel,.subjects-panel,.simple-section{border-radius:10px}
 .modal-card input,.modal-card textarea,.setup-form input,.setup-form textarea,.setup-card select,.topic-builder input,.topic-builder select{background:var(--surface-2);border-color:var(--border-strong);color:var(--text)}
