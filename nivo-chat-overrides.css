@@ -24,7 +24,7 @@
   .nivora-subject-page #topicModal .topic-tabs {
     flex: 0 0 auto !important;
   }
-  .nivora-subject-page #topicModal #chatPanel {
+  .nivora-subject-page #topicModal #chatPanel:not(.hidden) {
     display: flex !important;
     flex: 1 1 auto !important;
     flex-direction: column !important;
@@ -73,7 +73,7 @@
     min-height: 0 !important;
     overflow: hidden !important;
   }
-  .nivora-subject-page #topicModal #chatPanel {
+  .nivora-subject-page #topicModal #chatPanel:not(.hidden) {
     display: flex !important;
     flex: 1 1 auto !important;
     flex-direction: column !important;
